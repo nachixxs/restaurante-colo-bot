@@ -3,3 +3,4 @@ venv/
 __pycache__/
 *.pyc
 docs/guia-estudio.pdf
+.claude/settings.local.json
