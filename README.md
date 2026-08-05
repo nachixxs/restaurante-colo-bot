@@ -62,7 +62,7 @@ uvicorn app.main:app --reload
 Construido en 11 días de estudio guiado, del 4 al 14 de agosto de 2026.
 
 ### Sección 1 — El caño completo
-- [ ] Día 1 (4 ago) — Endpoint `/webhook` con FastAPI + Pydantic
+- [x] Día 1 (4 ago) — Endpoint `/webhook` con FastAPI + Pydantic
 - [ ] Día 2 (5 ago) — ngrok + Meta + n8n, circuito completo con WhatsApp real
 
 ### Sección 2 — Claude como agente
