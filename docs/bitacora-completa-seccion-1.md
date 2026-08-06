@@ -156,5 +156,8 @@ El nodo "Rechazar verificación" había quedado dibujado superpuesto visualmente
 | 12 | Mensajes reales no llegan (causa real) | Falta `subscribed_apps` entre WABA y App | Meta, API oculta |
 | 14 | Respuesta rechazada a número argentino | Formato "9" debe coincidir en registro Y en envío | Meta, quirk regional |
 | 15 | Errores JSON intermitentes | Eventos de estado sin filtrar | Diseño del workflow |
+| 13b | Token vencido otra vez, tras unas horas + reinicio de máquina (ocurrió en los hechos el Día 4, no el Día 2 — anotado acá por ser el mismo patrón que el Error 13) | Mismo síntoma exacto que el Error 13: 401, `OAuthException` code 190 | Meta, **patrón recurrente esperable con tokens temporales** |
 
-Estos seis puntos son los que más tiempo consumieron — y son exactamente los que, documentados así, evitan que el próximo cliente (o el próximo proyecto de Accelerate.ai) pase por lo mismo.
+Estos puntos son los que más tiempo consumieron — y son exactamente los que, documentados así, evitan que el próximo cliente (o el próximo proyecto de Accelerate.ai) pase por lo mismo.
+
+**Nota sobre el Error 13 / 13b:** no fue un accidente puntual — los tokens temporales de Meta vencen cada pocas horas, con o sin reinicio de por medio, así que este 401 va a **volver a aparecer** mientras sigamos usando un token temporal. Relevante para cuando se migre a un **token de sistema (system user token) permanente**: ese cambio debería eliminar esta clase de error de raíz, no solo parchearlo cada vez que vence.
