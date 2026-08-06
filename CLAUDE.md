@@ -39,6 +39,7 @@ Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 - `gh` ya está autenticado en esta máquina — usalo libremente para lo que haga falta
 - Commit después de cada cambio, por chico que sea (un paso, un fix, un ajuste) — no solo al cerrar el día ni solo cuando se pida. Mensaje descriptivo en español.
 - Preguntar siempre antes de `git push` — nunca automático
+- Cada vez que hagas uno o más commits en una misma sesión de trabajo, al final listalos (hash corto + mensaje) y preguntá explícitamente si hacer push o no — no asumas ninguna de las dos opciones.
 - Preguntar siempre antes de cualquier acción irreversible en GitHub (borrar repo, force push, reescribir historial)
 - Para trabajar cualquier día de la guía, usá la skill seguir-guia en vez de esperar que te pase el código.
 
