@@ -101,9 +101,11 @@ ngrok http 5678
 
 Es una página que corre localmente y te muestra, en vivo, **cada petición HTTP que pasó por el túnel** — quién la mandó, a qué hora, con qué respuesta. Lo usamos anoche como "cámara de seguridad": si algo no funcionaba, mirábamos ahí para confirmar si el pedido de Meta **llegó siquiera** hasta tu máquina, antes de sospechar de n8n o FastAPI.
 
-### Una limitación del plan gratuito
+### Una corrección sobre el plan gratuito (dato verificado el 6 ago)
 
-Cada vez que reiniciás ngrok, te asigna un **dominio nuevo al azar** (no elegís el nombre). Si la terminal donde corre ngrok se cierra, la URL cambia — y hay que volver a registrarla en el panel de Meta.
+Durante el Día 2 asumimos que ngrok asigna un dominio nuevo al azar en cada reinicio. **Es incorrecto.** Toda cuenta de ngrok, incluso gratuita, tiene un **dev domain fijo** asignado automáticamente a la cuenta (algo como `https://create-dork-petroleum.ngrok-free.dev`), que se reutiliza solo con `ngrok http <puerto>` — sin pasar `--domain` — y persiste mientras la cuenta exista. Lo confirmamos porque, tras reiniciar la máquina para el Día 4, `ngrok http 5678` levantó exactamente la misma URL que estaba configurada en Meta desde el Día 2 (verificado comparando el log de esa sesión, `ngrok.log`, contra el arranque de hoy).
+
+En la práctica: **no hace falta reconfigurar el Callback URL en Meta en cada reinicio de ngrok**, salvo que se cierre sesión en la cuenta de ngrok o se libere/cambie el dev domain manualmente desde el dashboard.
 
 ---
 
