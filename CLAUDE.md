@@ -37,8 +37,7 @@ Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 ## Git y GitHub
 
 - `gh` ya está autenticado en esta máquina — usalo libremente para lo que haga falta
-- Commit al cerrar cada día de la guía. Mensaje en español: "Día N: qué se construyó"
-- Commit también cuando se pida explícitamente ("hacé commit")
+- Commit después de cada cambio, por chico que sea (un paso, un fix, un ajuste) — no solo al cerrar el día ni solo cuando se pida. Mensaje descriptivo en español.
 - Preguntar siempre antes de `git push` — nunca automático
 - Preguntar siempre antes de cualquier acción irreversible en GitHub (borrar repo, force push, reescribir historial)
 - Para trabajar cualquier día de la guía, usá la skill seguir-guia en vez de esperar que te pase el código.
