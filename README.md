@@ -66,7 +66,7 @@ Construido en 11 días de estudio guiado, del 4 al 14 de agosto de 2026.
 - [x] Día 2 (5 ago) — ngrok + Meta + n8n, circuito completo con WhatsApp real
 
 ### Sección 2 — Claude como agente
-- [ ] Día 3 (6 ago) — Tool use, `crear_reserva`
+- [x] Día 3 (6 ago) — Tool use, `crear_reserva`
 - [ ] Día 4 (7 ago) — Confirmación real + guardado en Sheets
 - [ ] Día 5 (8 ago) — Datos faltantes + memoria de conversación
 
