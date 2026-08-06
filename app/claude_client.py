@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 import anthropic
 from dotenv import load_dotenv
@@ -38,7 +39,7 @@ tool_crear_reserva: dict = {
 }
 
 
-def probar_extraccion() -> None:
+def probar_extraccion() -> anthropic.types.Message:
     mensaje_prueba = "quiero una mesa para 4 el sábado a las 21hs"
 
     response = client.messages.create(
@@ -49,7 +50,28 @@ def probar_extraccion() -> None:
     )
 
     print(response.content)
+    return response
+
+
+def procesar_respuesta_reserva(
+    response: anthropic.types.Message,
+) -> dict[str, Any] | None:
+    for bloque in response.content:
+        if bloque.type == "tool_use" and bloque.name == "crear_reserva":
+            datos = bloque.input
+            confirmacion = (
+                f"Confirmado: mesa para {datos['personas']} "
+                f"el {datos['fecha']} a las {datos['hora']}"
+            )
+            return {
+                "respuesta": confirmacion,
+                "reserva": datos,
+            }
+
+    return None
 
 
 if __name__ == "__main__":
-    probar_extraccion()
+    response = probar_extraccion()
+    resultado = procesar_respuesta_reserva(response)
+    print(resultado)
