@@ -1,0 +1,280 @@
+{
+  "name": "Restaurante Colo - Dia 2 - WhatsApp a FastAPI",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "restaurante-colo-dia2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-get",
+      "name": "Webhook GET (verificacion Meta)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        160
+      ],
+      "webhookId": "restaurante-colo-dia2-get"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "verify-token-check",
+              "leftValue": "={{ $json.query['hub.verify_token'] }}",
+              "rightValue": "colo-webhook-2026",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "id": "verificar-token",
+      "name": "Verificar token",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        464,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "responder-challenge",
+      "name": "Responder challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        688,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Token de verificacion invalido",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "rechazar-verificacion",
+      "name": "Rechazar verificacion",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        912,
+        128
+      ],
+      "notes": "No lo pidio la guia explicitamente, pero sin esto la request de Meta quedaria colgada si el token no matchea (el nodo Webhook con responseMode=responseNode espera a que algun Respond to Webhook responda)."
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "restaurante-colo-dia2",
+        "options": {}
+      },
+      "id": "webhook-post",
+      "name": "Webhook POST (mensajes)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        624
+      ],
+      "webhookId": "restaurante-colo-dia2-post"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/webhook",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"numero\": $json.body.entry[0].changes[0].value.messages[0].from, \"texto\": $json.body.entry[0].changes[0].value.messages[0].text.body } }}",
+        "options": {}
+      },
+      "id": "http-fastapi",
+      "name": "Llamar a FastAPI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        624
+      ],
+      "notes": "n8n y FastAPI corren en la misma maquina, se llaman por localhost - no hace falta tunel para este tramo. El unico tunel de ngrok es el que expone n8n a Meta."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/<WHATSAPP_PHONE_ID>/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <WHATSAPP_TOKEN>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": $('Webhook POST (mensajes)').item.json.body.entry[0].changes[0].value.messages[0].from.replace(/^549(\\d+)$/, '54$1'), \"type\": \"text\", \"text\": { \"body\": $json.respuesta } } }}",
+        "options": {}
+      },
+      "id": "http-whatsapp-reply",
+      "name": "Responder por WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        944,
+        624
+      ],
+      "notes": "Completar <WHATSAPP_PHONE_ID> en la URL y <WHATSAPP_TOKEN> en el header Authorization a mano, con los valores reales del .env, antes de activar el workflow."
+    },
+    {
+      "position": [
+        464,
+        624
+      ],
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ !!$json.body?.entry?.[0]?.changes?.[0]?.value?.messages }}",
+              "id": "hay-messages-check",
+              "operator": {
+                "type": "boolean",
+                "singleValue": true,
+                "operation": "true"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "typeValidation": "strict",
+            "leftValue": "",
+            "caseSensitive": true,
+            "version": 3
+          }
+        },
+        "options": {}
+      },
+      "id": "filtrar-eventos-estado",
+      "notes": "Los webhooks de status (delivered/read) de WhatsApp no traen 'messages' en el payload, solo 'statuses'. Sin este filtro, 'Llamar a FastAPI' rompe con 'JSON parameter needs to be valid JSON' al armar el body con un campo inexistente.",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "name": "Filtrar eventos de estado"
+    },
+    {
+      "position": [
+        704,
+        780
+      ],
+      "parameters": {},
+      "id": "ignorar-evento-estado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "name": "Ignorar evento de estado"
+    }
+  ],
+  "connections": {
+    "Webhook GET (verificacion Meta)": {
+      "main": [
+        [
+          {
+            "node": "Verificar token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar token": {
+      "main": [
+        [
+          {
+            "node": "Responder challenge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rechazar verificacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook POST (mensajes)": {
+      "main": [
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "Filtrar eventos de estado"
+          }
+        ]
+      ]
+    },
+    "Llamar a FastAPI": {
+      "main": [
+        [
+          {
+            "node": "Responder por WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar eventos de estado": {
+      "main": [
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "Llamar a FastAPI"
+          }
+        ],
+        [
+          {
+            "type": "main",
+            "index": 0,
+            "node": "Ignorar evento de estado"
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

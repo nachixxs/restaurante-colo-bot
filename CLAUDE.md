@@ -41,3 +41,10 @@ Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 - Commit también cuando se pida explícitamente ("hacé commit")
 - Preguntar siempre antes de `git push` — nunca automático
 - Preguntar siempre antes de cualquier acción irreversible en GitHub (borrar repo, force push, reescribir historial)
+- Para trabajar cualquier día de la guía, usá la skill seguir-guia en vez de esperar que te pase el código.
+
+## n8n/workflow-dia2.json
+
+- Es una foto fija sanitizada (sin claves reales) del workflow al cerrar el Día 2/Sección 1, no un espejo en vivo del workflow real.
+- Se actualiza solo al cerrar cada día o sección, no en cada edición suelta hecha por API durante el día.
+- El workflow real, con las claves reales, vive únicamente en la base de datos local de n8n en esta máquina — no se exporta sin sanitizar a ningún lado.
