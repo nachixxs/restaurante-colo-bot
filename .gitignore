@@ -4,3 +4,9 @@ __pycache__/
 *.pyc
 docs/guia-estudio.pdf
 .claude/settings.local.json
+
+# Exports del workflow real de n8n via API - contienen el token de WhatsApp en texto
+# plano (el nodo "Responder por WhatsApp" arma el header a mano en vez de usar el
+# sistema de credenciales de n8n), nunca deben subirse a git
+n8n/workflow-real-actual.json
+n8n/*-actual.json
