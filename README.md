@@ -67,7 +67,7 @@ Construido en 11 días de estudio guiado, del 4 al 14 de agosto de 2026.
 
 ### Sección 2 — Claude como agente
 - [x] Día 3 (6 ago) — Tool use, `crear_reserva`
-- [ ] Día 4 (7 ago) — Confirmación real + guardado en Sheets
+- [x] Día 4 (7 ago) — Confirmación real + guardado en Sheets
 - [ ] Día 5 (8 ago) — Datos faltantes + memoria de conversación
 
 ### Sección 3 — RAG casero

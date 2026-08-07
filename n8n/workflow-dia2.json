@@ -124,6 +124,102 @@
     },
     {
       "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "<GOOGLE_SHEETS_SPREADSHEET_ID>",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Reservas",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "fecha": "={{ $json.reserva.fecha }}",
+            "hora": "={{ $json.reserva.hora }}",
+            "personas": "={{ $json.reserva.personas }}",
+            "nombre": "={{ $json.reserva.nombre }}",
+            "numero": "={{ $('Webhook POST (mensajes)').item.json.body.entry[0].changes[0].value.messages[0].from }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hora",
+              "displayName": "hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "personas",
+              "displayName": "personas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "nombre",
+              "displayName": "nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "numero",
+              "displayName": "numero",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "append-row-in-sheet",
+      "name": "Append row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        624
+      ],
+      "notes": "Guarda cada reserva confirmada (fecha, hora, personas, nombre, numero) en la planilla 'Reservas Restaurante Colo', pestaña 'Reservas'. El numero se toma del webhook original (no de la respuesta de FastAPI), y el resto de datos.reserva que arma app/claude_client.py.",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "<GOOGLE_SHEETS_CREDENTIAL_ID>",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
         "method": "POST",
         "url": "https://graph.facebook.com/v21.0/<WHATSAPP_PHONE_ID>/messages",
         "sendHeaders": true,
@@ -141,7 +237,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": $('Webhook POST (mensajes)').item.json.body.entry[0].changes[0].value.messages[0].from.replace(/^549(\\d+)$/, '54$1'), \"type\": \"text\", \"text\": { \"body\": $json.respuesta } } }}",
+        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": $('Webhook POST (mensajes)').item.json.body.entry[0].changes[0].value.messages[0].from.replace(/^549(\\d+)$/, '54$1'), \"type\": \"text\", \"text\": { \"body\": $('Llamar a FastAPI').item.json.respuesta } } }}",
         "options": {}
       },
       "id": "http-whatsapp-reply",
@@ -149,10 +245,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        944,
+        1152,
         624
       ],
-      "notes": "Completar <WHATSAPP_PHONE_ID> en la URL y <WHATSAPP_TOKEN> en el header Authorization a mano, con los valores reales del .env, antes de activar el workflow."
+      "notes": "Completar <WHATSAPP_PHONE_ID> en la URL y <WHATSAPP_TOKEN> en el header Authorization a mano, con los valores reales del .env, antes de activar el workflow. El body de texto referencia 'Llamar a FastAPI' explicitamente (no $json a secas), para no romperse si se insertan mas nodos en el medio de la cadena - ver bitacora Dia 4, Error 2."
     },
     {
       "position": [
@@ -243,6 +339,17 @@
       ]
     },
     "Llamar a FastAPI": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
       "main": [
         [
           {
