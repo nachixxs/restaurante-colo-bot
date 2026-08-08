@@ -48,6 +48,18 @@ Al probar la conversación de memoria (mensaje 3: "el sábado a las 21hs"), Clau
 
 No es un bug de la memoria de conversación ni del system prompt — es un detalle de cómo Claude interpreta el campo libre `fecha` según cómo esté redactado el mensaje del cliente. Se decidió no tocarlo ahora: queda anotado como pendiente conocido para relevar en el testing con guiones reales de los Días 9-10, junto con el resto de los casos raros de extracción.
 
+### Error 0 — El historial de conversación filtraba datos de una reserva ya confirmada hacia una reserva nueva y distinta
+
+**Problema:** con la memoria de conversación recién implementada, un mismo número de teléfono que ya había confirmado una reserva (ej. mesa para 4 el sábado a las 21hs) y después, en un mensaje posterior, pedía una reserva distinta sin repetir la cantidad de personas (ej. "quiero otra mesa para el miércoles a las 21hs"), corría el riesgo de que Claude reutilizara el dato "personas: 4" de la reserva anterior ya cerrada, en vez de preguntarlo de nuevo — sin ningún error visible, el dato quedaba mal asumido en silencio.
+
+**Causa:** `conversaciones[numero]` guardaba el historial completo desde el primer mensaje, sin cortarlo nunca. Cada llamada a Claude mandaba ese historial entero como `messages`, así que una reserva ya confirmada y cerrada seguía formando parte del contexto de cualquier mensaje futuro de ese mismo número, sin distinguir "estoy completando esta misma reserva" de "estoy arrancando una reserva nueva".
+
+**Solución:** en `app/main.py`, justo cuando `procesar_respuesta_reserva()` devuelve un resultado exitoso (la tool se usó y la reserva quedó confirmada), se resetea el historial de ese número con `conversaciones.pop(mensaje.numero, None)`. Así, la próxima vez que ese número escriba, arranca una conversación en blanco, sin arrastrar datos de la reserva anterior.
+
+**Verificación:** se repitió la conversación de 3 mensajes que completa una reserva de a poco (confirma que la memoria dentro de UNA reserva sigue funcionando), y se agregó un cuarto mensaje simulando una reserva nueva y distinta sin mencionar la cantidad de personas — Claude preguntó la cantidad de personas en vez de asumir la de la reserva anterior.
+
+**Lección para el próximo cliente / para días futuros de este proyecto:** este reset total del historial tras cada reserva confirmada asume que, por ahora, la única interacción posible después de confirmar es "empezar una reserva nueva" — no existe todavía ninguna tool para modificar o cancelar una reserva ya hecha. Si en el futuro se agrega una tool de ese tipo, resetear todo el historial va a borrar también el contexto de la reserva que el cliente querría modificar. En ese momento va a hacer falta una estrategia de memoria distinta — por ejemplo, no vaciar el historial por completo sino guardar el ID (o los datos clave) de la última reserva confirmada, para poder referenciarla en un pedido de modificación sin arrastrar el resto de la conversación vieja.
+
 ## Resumen de causas raíz — para no repetir estos errores con el próximo cliente
 
 | # | Síntoma | Causa real | Categoría |
@@ -56,3 +68,4 @@ No es un bug de la memoria de conversación ni del system prompt — es un detal
 | 1 | Planilla con columnas `spreadsheetId`/`sheets`/`properties` en vez de headers | Nodo Google Sheets armado a mano por API cayó en auto-mapeo (schema no válido) | n8n, nodos con resource mapper |
 | 2 | WhatsApp 400 "falta 'body'" tras insertar un nodo nuevo | Expresión `$json.campo` (implícita al nodo anterior) rota al cambiar el orden de la cadena | n8n, expresiones |
 | 3 | Token de WhatsApp vencido (recurrente) | Token temporal de 24hs de la app de desarrollador de Meta, no un token de sistema permanente | Meta, configuración |
+| 4 | Reserva nueva heredaba datos (personas) de una reserva ya confirmada del mismo número | Historial de conversación sin corte, se mandaba completo en cada llamada a Claude | Claude API, memoria de conversación |

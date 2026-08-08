@@ -8,7 +8,7 @@ from app.claude_client import (
     procesar_respuesta_reserva,
     tool_crear_reserva,
 )
-from app.conversaciones import agregar_mensaje
+from app.conversaciones import agregar_mensaje, conversaciones
 from app.models import MensajeEntrante
 
 app = FastAPI()
@@ -28,7 +28,10 @@ async def recibir_mensaje(mensaje: MensajeEntrante) -> dict[str, Any]:
 
     resultado = procesar_respuesta_reserva(response)
     if resultado is not None:
-        agregar_mensaje(mensaje.numero, "assistant", resultado["respuesta"])
+        # Reserva confirmada: se corta el historial de este número para que
+        # no arrastre datos (ej. cantidad de personas) hacia una reserva
+        # nueva y distinta del mismo cliente.
+        conversaciones.pop(mensaje.numero, None)
         return resultado
 
     # Claude no usó la tool (p. ej. pidió un dato faltante en texto libre)
