@@ -8,6 +8,14 @@ load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
+SYSTEM_PROMPT_RESERVA = (
+    "Sos el asistente de reservas de un restaurante. Si falta un dato "
+    "obligatorio para usar la tool crear_reserva (fecha, hora o cantidad "
+    "de personas), preguntalo directamente en vez de inventarlo o "
+    "asumirlo. No uses la tool crear_reserva hasta tener los datos "
+    "obligatorios."
+)
+
 tool_crear_reserva: dict = {
     "name": "crear_reserva",
     "description": (
@@ -39,12 +47,11 @@ tool_crear_reserva: dict = {
 }
 
 
-def probar_extraccion() -> anthropic.types.Message:
-    mensaje_prueba = "quiero una mesa para 4 el sábado a las 21hs"
-
+def probar_extraccion(mensaje_prueba: str) -> anthropic.types.Message:
     response = client.messages.create(
         model="claude-sonnet-5",
         max_tokens=1024,
+        system=SYSTEM_PROMPT_RESERVA,
         tools=[tool_crear_reserva],
         messages=[{"role": "user", "content": mensaje_prueba}],
     )
@@ -72,6 +79,13 @@ def procesar_respuesta_reserva(
 
 
 if __name__ == "__main__":
-    response = probar_extraccion()
-    resultado = procesar_respuesta_reserva(response)
-    print(resultado)
+    mensajes_prueba = (
+        "quiero una mesa para 4 el sábado a las 21hs",
+        "quiero reservar una mesa",
+    )
+    for mensaje_prueba in mensajes_prueba:
+        print(f"--- Mensaje: {mensaje_prueba!r} ---")
+        response = probar_extraccion(mensaje_prueba)
+        resultado = procesar_respuesta_reserva(response)
+        print(resultado)
+        print()
