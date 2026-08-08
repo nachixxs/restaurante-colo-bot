@@ -38,6 +38,16 @@ Confirmación real por WhatsApp + guardado de cada reserva en Google Sheets.
 
 El token de acceso de la API de WhatsApp volvió a vencer durante las pruebas de hoy — ya es la tercera vez en el proyecto (recurrencia documentada también para el Error 13 de la Sección 1). Confirma que es un patrón esperable del token temporal de la app de desarrollador de Meta, no un accidente puntual. Queda pendiente resolverlo antes de cualquier demo real: pasar a un token de sistema (system user token) de vida permanente en vez del token temporal de 24hs que da el panel de "Primeros pasos".
 
+## Día 5 — 8 de agosto
+
+System prompt para pedir datos faltantes explícitamente + memoria de conversación por número de teléfono.
+
+### Nota — Pendiente conocido: fecha duplicada en el texto de confirmación ("el el sábado")
+
+Al probar la conversación de memoria (mensaje 3: "el sábado a las 21hs"), Claude extrajo el campo `fecha` como `"el sábado"` (con el artículo incluido) en vez de `"sábado"`. Como el f-string de `procesar_respuesta_reserva` ya antepone su propio "el" (`f"el {datos['fecha']}"`), el texto de confirmación quedó "Confirmado: mesa para 4 **el el sábado** a las 21hs".
+
+No es un bug de la memoria de conversación ni del system prompt — es un detalle de cómo Claude interpreta el campo libre `fecha` según cómo esté redactado el mensaje del cliente. Se decidió no tocarlo ahora: queda anotado como pendiente conocido para relevar en el testing con guiones reales de los Días 9-10, junto con el resto de los casos raros de extracción.
+
 ## Resumen de causas raíz — para no repetir estos errores con el próximo cliente
 
 | # | Síntoma | Causa real | Categoría |
