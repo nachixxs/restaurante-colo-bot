@@ -22,6 +22,9 @@ app = FastAPI()
 # leer y parsear el JSON de embeddings en cada mensaje sería trabajo repetido
 # al pedo, el archivo no cambia mientras el servidor está corriendo.
 faq_vectores = cargar_faq_vectores()
+# flush=True para que la línea salga aunque la consola esté redirigida a un
+# archivo o a un pipe, donde stdout usa buffer por bloques y la retendría.
+print(f"FAQ cargado: {len(faq_vectores)} fragmentos", flush=True)
 
 
 @app.post("/webhook")
