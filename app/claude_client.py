@@ -8,12 +8,17 @@ load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-SYSTEM_PROMPT_RESERVA = (
-    "Sos el asistente de reservas de un restaurante. Si falta un dato "
-    "obligatorio para usar la tool crear_reserva (fecha, hora o cantidad "
-    "de personas), preguntalo directamente en vez de inventarlo o "
-    "asumirlo. No uses la tool crear_reserva hasta tener los datos "
-    "obligatorios."
+SYSTEM_PROMPT_BOT = (
+    "Sos el asistente de un restaurante y atendés a los clientes por "
+    "WhatsApp. Tenés dos herramientas y siempre tenés que usar la que "
+    "corresponda:\n"
+    "- crear_reserva: cuando el cliente quiere reservar una mesa. Si falta "
+    "un dato obligatorio (fecha, hora o cantidad de personas), preguntalo "
+    "directamente en vez de inventarlo o asumirlo, y no uses la tool hasta "
+    "tenerlos todos.\n"
+    "- consultar_faq: cuando el cliente pregunta cualquier otra cosa sobre "
+    "el restaurante. Nunca contestes esas preguntas de memoria: no sabés "
+    "nada del restaurante que no venga de consultar_faq."
 )
 
 tool_crear_reserva: dict = {
@@ -46,18 +51,73 @@ tool_crear_reserva: dict = {
     },
 }
 
+tool_consultar_faq: dict = {
+    "name": "consultar_faq",
+    "description": (
+        "Busca la respuesta en las preguntas frecuentes del restaurante. "
+        "Usala cuando el cliente pregunta algo sobre el restaurante que no "
+        "es pedir una mesa: horarios, menú y platos, opciones sin TACC, "
+        "wifi, mascotas, estacionamiento, medios de pago o ubicación."
+    ),
+    # Vacío a propósito: la tool no nos tiene que devolver ningún dato, sirve
+    # solo para que Claude marque que el mensaje es una pregunta y no una
+    # reserva. La búsqueda la hacemos nosotros con el texto del cliente.
+    "input_schema": {
+        "type": "object",
+        "properties": {},
+    },
+}
+
 
 def probar_extraccion(mensaje_prueba: str) -> anthropic.types.Message:
     response = client.messages.create(
         model="claude-sonnet-5",
         max_tokens=1024,
-        system=SYSTEM_PROMPT_RESERVA,
+        system=SYSTEM_PROMPT_BOT,
         tools=[tool_crear_reserva],
         messages=[{"role": "user", "content": mensaje_prueba}],
     )
 
     print(response.content)
     return response
+
+
+def hay_tool_use(response: anthropic.types.Message, nombre_tool: str) -> bool:
+    return any(
+        bloque.type == "tool_use" and bloque.name == nombre_tool
+        for bloque in response.content
+    )
+
+
+def extraer_texto(response: anthropic.types.Message) -> str:
+    return "".join(bloque.text for bloque in response.content if bloque.type == "text")
+
+
+def responder_con_contexto(contexto: str, historial: list[dict[str, str]]) -> str:
+    """Segunda llamada a Claude para el camino de FAQ: responde la pregunta
+    del cliente apoyándose solo en los fragmentos que trajo la búsqueda.
+    """
+    system_prompt = (
+        "Sos el asistente de un restaurante y atendés por WhatsApp. Respondé "
+        "la última pregunta del cliente usando únicamente la información del "
+        "contexto de abajo. Si el contexto no alcanza para responderla, decí "
+        "que no tenés ese dato a mano y que lo va a responder alguien del "
+        "local. Nunca inventes información del restaurante que no esté en el "
+        "contexto. Contestá corto y natural, como un mensaje de WhatsApp.\n\n"
+        f"Contexto (preguntas frecuentes del restaurante):\n{contexto}"
+    )
+
+    # Sin tools acá: en esta llamada solo queremos texto, no otra decisión de
+    # ruteo. Va el historial completo para que el modelo entienda repreguntas
+    # encadenadas ("¿y los domingos?").
+    response = client.messages.create(
+        model="claude-sonnet-5",
+        max_tokens=1024,
+        system=system_prompt,
+        messages=historial,
+    )
+
+    return extraer_texto(response)
 
 
 def procesar_respuesta_reserva(

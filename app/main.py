@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import FastAPI
 
 from app.claude_client import (
-    SYSTEM_PROMPT_RESERVA,
+    SYSTEM_PROMPT_BOT,
     client,
     procesar_respuesta_reserva,
     tool_crear_reserva,
@@ -21,7 +21,7 @@ async def recibir_mensaje(mensaje: MensajeEntrante) -> dict[str, Any]:
     response = client.messages.create(
         model="claude-sonnet-5",
         max_tokens=1024,
-        system=SYSTEM_PROMPT_RESERVA,
+        system=SYSTEM_PROMPT_BOT,
         tools=[tool_crear_reserva],
         messages=historial,
     )
