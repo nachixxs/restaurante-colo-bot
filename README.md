@@ -73,7 +73,7 @@ Construido en 11 días de estudio guiado, del 4 al 14 de agosto de 2026.
 ### Sección 3 — RAG casero
 - [x] Día 6 (9 ago) — Embeddings del FAQ (Plan B: FAQ de ejemplo)
 - [x] Día 7 (10 ago) — Chunking + búsqueda por similitud
-- [ ] Día 8 (11 ago) — Unificar reserva + FAQ
+- [x] Día 8 (11 ago) — Unificar reserva + FAQ
 
 ### Sección 4 — Pulido y testing
 - [ ] Día 9 (12 ago) — Manejo de errores
