@@ -6,7 +6,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+# Una key vacía no rompe al construir el cliente: revienta recién en la primera
+# llamada, y lo hace con un TypeError que NO es subclase de anthropic.APIError,
+# así que se escapa del except del ruteo en main.py y termina en un 500 con el
+# bot mudo. Igual que el FAQ vacío, es un error de deploy y no una condición
+# válida de runtime, así que corta el arranque. Si la variable directamente no
+# está, el os.environ[...] ya tira KeyError, que también mata el arranque.
+api_key = os.environ["ANTHROPIC_API_KEY"].strip()
+if not api_key:
+    raise RuntimeError(
+        "ANTHROPIC_API_KEY está vacía en el .env. Completala con la key real "
+        "(ver .env.example)."
+    )
+
+client = anthropic.Anthropic(api_key=api_key)
 
 # Mensajes de resguardo del Día 9: se muestran cuando falla una llamada
 # externa (Claude o Voyage) y el bot no puede seguir el flujo normal.
