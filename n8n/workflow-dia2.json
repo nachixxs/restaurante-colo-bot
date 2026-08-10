@@ -65,8 +65,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        688,
-        80
+        672,
+        48
       ]
     },
     {
@@ -99,7 +99,7 @@
       "typeVersion": 2.1,
       "position": [
         240,
-        624
+        640
       ],
       "webhookId": "restaurante-colo-dia2-post"
     },
@@ -121,6 +121,84 @@
         624
       ],
       "notes": "n8n y FastAPI corren en la misma maquina, se llaman por localhost - no hace falta tunel para este tramo. El unico tunel de ngrok es el que expone n8n a Meta."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v21.0/<WHATSAPP_PHONE_ID>/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <WHATSAPP_TOKEN>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": $('Webhook POST (mensajes)').item.json.body.entry[0].changes[0].value.messages[0].from.replace(/^549(\\d+)$/, '54$1'), \"type\": \"text\", \"text\": { \"body\": $('Llamar a FastAPI').item.json.respuesta } } }}",
+        "options": {}
+      },
+      "id": "http-whatsapp-reply",
+      "name": "Responder por WhatsApp",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1296,
+        832
+      ],
+      "notes": "Completar <WHATSAPP_PHONE_ID> en la URL y <WHATSAPP_TOKEN> en el header Authorization a mano, con los valores reales del .env, antes de activar el workflow."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ !!$json.body?.entry?.[0]?.changes?.[0]?.value?.messages }}",
+              "id": "hay-messages-check",
+              "operator": {
+                "type": "boolean",
+                "singleValue": true,
+                "operation": "true"
+              },
+              "rightValue": true
+            }
+          ],
+          "combinator": "and",
+          "options": {
+            "typeValidation": "strict",
+            "leftValue": "",
+            "caseSensitive": true,
+            "version": 3
+          }
+        },
+        "options": {}
+      },
+      "position": [
+        464,
+        640
+      ],
+      "id": "filtrar-eventos-estado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "name": "Filtrar eventos de estado",
+      "notes": "Los webhooks de status (delivered/read) de WhatsApp no traen 'messages' en el payload, solo 'statuses'. Sin este filtro, 'Llamar a FastAPI' rompe con 'JSON parameter needs to be valid JSON' al armar el body con un campo inexistente."
+    },
+    {
+      "parameters": {},
+      "position": [
+        704,
+        848
+      ],
+      "id": "ignorar-evento-estado",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "name": "Ignorar evento de estado"
     },
     {
       "parameters": {
@@ -202,15 +280,15 @@
         },
         "options": {}
       },
-      "id": "append-row-in-sheet",
-      "name": "Append row in sheet",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        912,
-        624
+        1184,
+        608
       ],
-      "notes": "Guarda cada reserva confirmada (fecha, hora, personas, nombre, numero) en la planilla 'Reservas Restaurante Colo', pestaña 'Reservas'. El numero se toma del webhook original (no de la respuesta de FastAPI), y el resto de datos.reserva que arma app/claude_client.py.",
+      "id": "append-row-in-sheet",
+      "name": "Append row in sheet",
+      "notes": "Guarda cada reserva confirmada (fecha, hora, personas, nombre, numero) en la planilla 'Reservas Restaurante Colo', pestaña 'Reservas'. El numero se toma del webhook original (no de la respuesta de FastAPI), y el resto de datos.reserva que arma app/claude_client.py. Solo se llega aca si el nodo 'If' confirma que hay reserva (no es una respuesta de FAQ).",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "<GOOGLE_SHEETS_CREDENTIAL_ID>",
@@ -220,81 +298,38 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://graph.facebook.com/v21.0/<WHATSAPP_PHONE_ID>/messages",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "Bearer <WHATSAPP_TOKEN>"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ { \"messaging_product\": \"whatsapp\", \"to\": $('Webhook POST (mensajes)').item.json.body.entry[0].changes[0].value.messages[0].from.replace(/^549(\\d+)$/, '54$1'), \"type\": \"text\", \"text\": { \"body\": $('Llamar a FastAPI').item.json.respuesta } } }}",
-        "options": {}
-      },
-      "id": "http-whatsapp-reply",
-      "name": "Responder por WhatsApp",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1152,
-        624
-      ],
-      "notes": "Completar <WHATSAPP_PHONE_ID> en la URL y <WHATSAPP_TOKEN> en el header Authorization a mano, con los valores reales del .env, antes de activar el workflow. El body de texto referencia 'Llamar a FastAPI' explicitamente (no $json a secas), para no romperse si se insertan mas nodos en el medio de la cadena - ver bitacora Dia 4, Error 2."
-    },
-    {
-      "position": [
-        464,
-        624
-      ],
-      "parameters": {
         "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
           "conditions": [
             {
-              "leftValue": "={{ !!$json.body?.entry?.[0]?.changes?.[0]?.value?.messages }}",
-              "id": "hay-messages-check",
+              "id": "9d45120e-0bfa-455e-96ca-3937f196a5b2",
+              "leftValue": "={{ $json.reserva }}",
+              "rightValue": "",
               "operator": {
-                "type": "boolean",
-                "singleValue": true,
-                "operation": "true"
-              },
-              "rightValue": true
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
             }
           ],
-          "combinator": "and",
-          "options": {
-            "typeValidation": "strict",
-            "leftValue": "",
-            "caseSensitive": true,
-            "version": 3
-          }
+          "combinator": "and"
         },
         "options": {}
       },
-      "id": "filtrar-eventos-estado",
-      "notes": "Los webhooks de status (delivered/read) de WhatsApp no traen 'messages' en el payload, solo 'statuses'. Sin este filtro, 'Llamar a FastAPI' rompe con 'JSON parameter needs to be valid JSON' al armar el body con un campo inexistente.",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
-      "name": "Filtrar eventos de estado"
-    },
-    {
       "position": [
-        704,
-        780
+        912,
+        624
       ],
-      "parameters": {},
-      "id": "ignorar-evento-estado",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "name": "Ignorar evento de estado"
+      "id": "reserva-o-faq",
+      "name": "If",
+      "notes": "Dia 8: distingue si la respuesta de FastAPI trae una reserva confirmada (rama true -> guardar en Sheets) o es una respuesta de FAQ sin reserva (rama false -> responder directo por WhatsApp sin tocar la planilla)."
     }
   ],
   "connections": {
@@ -342,18 +377,7 @@
       "main": [
         [
           {
-            "node": "Append row in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Append row in sheet": {
-      "main": [
-        [
-          {
-            "node": "Responder por WhatsApp",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -377,11 +401,42 @@
           }
         ]
       ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Responder por WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder por WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "pinData": {}
 }
