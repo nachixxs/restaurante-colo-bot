@@ -69,11 +69,10 @@ async def recibir_mensaje(mensaje: MensajeEntrante) -> dict[str, Any]:
         except BusquedaFallidaError:
             return {"respuesta": MSG_ERROR_BUSQUEDA}
 
-        # Si ni el mejor match llega al umbral, no hay contexto relevante:
-        # ni vale la pena gastar otra llamada a Claude para "responder" con
-        # fragmentos que no tienen que ver con la pregunta.
-        mejor_score = fragmentos[0][0]
-        if mejor_score < UMBRAL_SIMILITUD:
+        # Si no hay fragmentos, o si ni el mejor match llega al umbral, no hay
+        # contexto relevante: no vale la pena gastar otra llamada a Claude para
+        # "responder" con fragmentos que no tienen que ver con la pregunta.
+        if not fragmentos or fragmentos[0][0] < UMBRAL_SIMILITUD:
             return {"respuesta": MSG_SIN_MATCH}
 
         contexto = "\n".join(texto for _, texto in fragmentos)

@@ -26,7 +26,21 @@ class BusquedaFallidaError(Exception):
 
 def cargar_faq_vectores() -> list[tuple[str, list[float]]]:
     with open(RUTA_EMBEDDINGS, encoding="utf-8") as f:
-        return json.load(f)
+        faq_vectores = json.load(f)
+
+    # Un FAQ vacío es un error de deploy (ej. regenerar los embeddings con la
+    # lista de textos vacía), no una condición válida de runtime. Sin esto el
+    # servidor levanta igual y recién falla con la primera pregunta real de un
+    # cliente. RuntimeError y no una excepción propia porque nadie la captura:
+    # el objetivo es que uvicorn no arranque. BusquedaFallidaError existe
+    # justamente porque main.py sí necesita distinguirla del resto.
+    if not faq_vectores:
+        raise RuntimeError(
+            f"El FAQ está vacío ({RUTA_EMBEDDINGS}). Regeneralo con: "
+            "python -m app.rag.embeddings"
+        )
+
+    return faq_vectores
 
 
 def similitud_coseno(a: list[float], b: list[float]) -> float:
@@ -41,9 +55,12 @@ def buscar_relevantes(
     junto con su score de similitud (antes se descartaba y solo quedaba el
     texto) para que el llamador pueda compararlo contra UMBRAL_SIMILITUD.
     """
+    # IndexError además de VoyageError: si Voyage devolviera una respuesta con
+    # la lista de embeddings vacía, el [0] rompería fuera del except y llegaría
+    # a main.py como un 500, que es justo lo que queremos evitar.
     try:
         emb_pregunta = vo.embed([pregunta], model="voyage-4", input_type="query").embeddings[0]
-    except VoyageError as e:
+    except (VoyageError, IndexError) as e:
         raise BusquedaFallidaError("Falló el embedding de la pregunta") from e
 
     scores = [(similitud_coseno(emb_pregunta, vector), texto) for texto, vector in faq_vectores]
