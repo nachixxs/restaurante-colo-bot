@@ -1,0 +1,233 @@
+<svg viewBox="0 0 1320 1700" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <marker id="arrow-gray" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#8b93a5"/></marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4ade80"/></marker>
+    <marker id="arrow-orange" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#f5a623"/></marker>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#a78bfa"/></marker>
+    <marker id="arrow-gold" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#e8c15a"/></marker>
+    <marker id="arrow-indigo" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#818cf8"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1320" height="1700" fill="#0a0e1a"/>
+
+  <!-- TITLE -->
+  <text x="660" y="34" text-anchor="middle" fill="#f5f7fa" font-size="22" font-weight="bold">Restaurante Colo Bot — cómo se conecta todo</text>
+  <text x="660" y="56" text-anchor="middle" fill="#8b93a5" font-size="12">Cliente · Meta WhatsApp Cloud API · ngrok · n8n · FastAPI · Claude API · Google Sheets · Voyage AI (RAG) — Días 1 a 8 (Secciones 1, 2 y 3)</text>
+
+  <!-- ============ SECCIÓN 1-2 BAND LABEL ============ -->
+  <text x="30" y="90" fill="#6d92c9" font-size="13" font-weight="bold">Sección 1 y 2 — El caño completo + Claude como agente (Días 1 a 5)</text>
+
+  <!-- CLIENTE -->
+  <rect x="30" y="150" width="170" height="90" rx="10" fill="#0f2818" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="115" y="178" text-anchor="middle" fill="#f5f7fa" font-size="14" font-weight="bold">Cliente</text>
+  <text x="115" y="198" text-anchor="middle" fill="#9ca8bd" font-size="10">tu WhatsApp personal</text>
+  <text x="115" y="214" text-anchor="middle" fill="#9ca8bd" font-size="10">+54 9 2625 63-4845</text>
+
+  <!-- META CONTAINER -->
+  <rect x="250" y="105" width="260" height="470" rx="10" fill="none" stroke="#3b6ea5" stroke-width="1.2" stroke-dasharray="5,4"/>
+  <text x="380" y="126" text-anchor="middle" fill="#6d92c9" font-size="12" font-weight="bold">Meta — WhatsApp Cloud API (3 capas)</text>
+
+  <rect x="270" y="145" width="220" height="80" rx="8" fill="#132c4d" stroke="#3b6ea5" stroke-width="1.3"/>
+  <text x="380" y="170" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Capa 1 — Número</text>
+  <text x="380" y="186" text-anchor="middle" fill="#9ca8bd" font-size="9">+1 555 666 8817</text>
+  <text x="380" y="200" text-anchor="middle" fill="#9ca8bd" font-size="9">Phone Number ID</text>
+
+  <line x1="380" y1="225" x2="380" y2="300" stroke="#8b93a5" stroke-width="1.3" marker-end="url(#arrow-gray)"/>
+  <text x="392" y="255" fill="#4ade80" font-size="9" font-weight="bold">subscribed_apps ✓</text>
+  <text x="392" y="267" fill="#7d8698" font-size="8">resuelto Día 2</text>
+
+  <rect x="270" y="300" width="220" height="80" rx="8" fill="#132c4d" stroke="#3b6ea5" stroke-width="1.3"/>
+  <text x="380" y="325" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Capa 2 — WABA</text>
+  <text x="380" y="341" text-anchor="middle" fill="#9ca8bd" font-size="9">WhatsApp Business Account</text>
+
+  <line x1="380" y1="380" x2="380" y2="455" stroke="#8b93a5" stroke-width="1.3" marker-end="url(#arrow-gray)"/>
+
+  <rect x="270" y="455" width="220" height="80" rx="8" fill="#132c4d" stroke="#3b6ea5" stroke-width="1.3"/>
+  <text x="380" y="480" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Capa 3 — App de Meta</text>
+  <text x="380" y="496" text-anchor="middle" fill="#9ca8bd" font-size="9">Accelerate Restaurant Bot</text>
+  <text x="380" y="510" text-anchor="middle" fill="#9ca8bd" font-size="9">Callback URL + Verify Token ✓</text>
+
+  <!-- cliente -> capa1 -->
+  <path d="M200,180 C225,180 245,180 268,180" fill="none" stroke="#4ade80" stroke-width="1.6" marker-end="url(#arrow-green)"/>
+  <text x="210" y="172" fill="#4ade80" font-size="9">1. "hola"</text>
+  <path d="M268,205 C245,205 225,225 202,222" fill="none" stroke="#4ade80" stroke-width="1.3" stroke-dasharray="3,3" marker-end="url(#arrow-green)"/>
+  <text x="207" y="238" fill="#7d8698" font-size="8">7. respuesta</text>
+
+  <!-- ngrok -->
+  <rect x="560" y="455" width="150" height="80" rx="8" fill="#0e2a26" stroke="#2dd4bf" stroke-width="1.3"/>
+  <text x="635" y="480" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">ngrok</text>
+  <text x="635" y="497" text-anchor="middle" fill="#9ca8bd" font-size="9">túnel público</text>
+  <text x="635" y="511" text-anchor="middle" fill="#7d8698" font-size="8">...ngrok-free.dev</text>
+
+  <line x1="490" y1="495" x2="558" y2="495" stroke="#8b93a5" stroke-width="1.3" marker-end="url(#arrow-gray)"/>
+  <text x="500" y="487" fill="#9ca8bd" font-size="8">2. POST webhook</text>
+
+  <!-- n8n -->
+  <rect x="770" y="435" width="170" height="110" rx="8" fill="#3a1420" stroke="#e85d75" stroke-width="1.3"/>
+  <text x="855" y="460" text-anchor="middle" fill="#f5f7fa" font-size="13" font-weight="bold">n8n</text>
+  <text x="855" y="477" text-anchor="middle" fill="#9ca8bd" font-size="9">Webhook+IF+Sheets+Resp</text>
+  <text x="855" y="491" text-anchor="middle" fill="#7d8698" font-size="8">localhost:5678</text>
+  <text x="855" y="505" text-anchor="middle" fill="#4ade80" font-size="9" font-weight="bold">Published ✓</text>
+
+  <line x1="710" y1="495" x2="768" y2="490" stroke="#8b93a5" stroke-width="1.3" marker-end="url(#arrow-gray)"/>
+  <text x="713" y="486" fill="#9ca8bd" font-size="8">3. reenvía</text>
+
+  <!-- FastAPI -->
+  <rect x="1000" y="450" width="170" height="90" rx="8" fill="#0e2a2e" stroke="#22c1c9" stroke-width="1.3"/>
+  <text x="1085" y="475" text-anchor="middle" fill="#f5f7fa" font-size="13" font-weight="bold">FastAPI</text>
+  <text x="1085" y="492" text-anchor="middle" fill="#9ca8bd" font-size="9">app/main.py</text>
+  <text x="1085" y="506" text-anchor="middle" fill="#7d8698" font-size="8">127.0.0.1:8000</text>
+  <text x="1085" y="519" text-anchor="middle" fill="#7d8698" font-size="8">POST /webhook</text>
+
+  <line x1="940" y1="495" x2="998" y2="495" stroke="#8b93a5" stroke-width="1.3" marker-end="url(#arrow-gray)"/>
+  <text x="945" y="487" fill="#9ca8bd" font-size="8">4. POST</text>
+  <line x1="998" y1="520" x2="940" y2="520" stroke="#8b93a5" stroke-width="1.3" stroke-dasharray="3,3" marker-end="url(#arrow-gray)"/>
+  <text x="945" y="533" fill="#7d8698" font-size="8">5. respuesta</text>
+
+  <!-- curved arrow n8n -> Meta capa1 (respuesta directa) -->
+  <path d="M855,435 C740,300 620,220 495,190" fill="none" stroke="#f5a623" stroke-width="1.6" marker-end="url(#arrow-orange)"/>
+  <text x="640" y="255" fill="#f5a623" font-size="10" font-weight="bold" text-anchor="middle">6. n8n llama directo a la API de Meta</text>
+  <text x="640" y="268" fill="#c98f3b" font-size="8" text-anchor="middle">graph.facebook.com/v21.0/.../messages (no pasa por ngrok)</text>
+
+  <!-- Claude API (reserva) -->
+  <rect x="1000" y="600" width="170" height="110" rx="8" fill="#241338" stroke="#a78bfa" stroke-width="1.3"/>
+  <text x="1085" y="625" text-anchor="middle" fill="#f5f7fa" font-size="13" font-weight="bold">Claude API</text>
+  <text x="1085" y="642" text-anchor="middle" fill="#9ca8bd" font-size="9">claude_client.py</text>
+  <text x="1085" y="656" text-anchor="middle" fill="#7d8698" font-size="8">tools + system + historial</text>
+  <text x="1085" y="670" text-anchor="middle" fill="#7d8698" font-size="8">crear_reserva (Sección 2)</text>
+  <text x="1085" y="683" text-anchor="middle" fill="#7d8698" font-size="8">consultar_faq (Sección 3) ✓</text>
+
+  <line x1="1085" y1="540" x2="1085" y2="598" stroke="#a78bfa" stroke-width="1.4" marker-end="url(#arrow-purple)"/>
+  <text x="1097" y="565" fill="#a78bfa" font-size="8">4a. FastAPI llama a Claude</text>
+  <line x1="1105" y1="598" x2="1105" y2="540" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#arrow-purple)"/>
+  <text x="1113" y="585" fill="#a78bfa" font-size="8">4b. tool_use / texto</text>
+
+  <!-- Google Sheets -->
+  <rect x="770" y="600" width="170" height="90" rx="8" fill="#0f2818" stroke="#22c55e" stroke-width="1.3"/>
+  <text x="855" y="625" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Google Sheets</text>
+  <text x="855" y="642" text-anchor="middle" fill="#9ca8bd" font-size="9">Reservas Restaurante Colo</text>
+  <text x="855" y="656" text-anchor="middle" fill="#7d8698" font-size="8">nodo: Append row (n8n)</text>
+
+  <line x1="855" y1="545" x2="855" y2="598" stroke="#4ade80" stroke-width="1.3" marker-end="url(#arrow-green)"/>
+  <text x="863" y="575" fill="#4ade80" font-size="8">5b. guarda la fila</text>
+
+  <!-- conversaciones.py -->
+  <rect x="1000" y="745" width="170" height="90" rx="8" fill="#1a1d26" stroke="#7d8698" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="1085" y="770" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">conversaciones.py</text>
+  <text x="1085" y="787" text-anchor="middle" fill="#9ca8bd" font-size="9">historial por número (RAM)</text>
+  <text x="1085" y="801" text-anchor="middle" fill="#7d8698" font-size="8">reset tras reserva confirmada</text>
+
+  <line x1="1085" y1="710" x2="1085" y2="743" stroke="#7d8698" stroke-width="1.1" stroke-dasharray="2,3" marker-end="url(#arrow-gray)"/>
+  <text x="1097" y="730" fill="#7d8698" font-size="8">lee/escribe</text>
+
+  <!-- ============ SECCIÓN 3 BAND ============ -->
+  <line x1="20" y1="880" x2="1300" y2="880" stroke="#3a3f4d" stroke-width="1"/>
+  <text x="30" y="910" fill="#e8c15a" font-size="14" font-weight="bold">Sección 3 — RAG casero (Días 6 a 8) — lo que se agregó en este chat</text>
+  <text x="30" y="928" fill="#8b93a5" font-size="11">Cuando Claude NO usa crear_reserva, decide entre dos caminos más — el ruteo vive en app/main.py</text>
+
+  <!-- bridge arrow from Claude API down to routing -->
+  <path d="M1085,710 C1085,750 1085,780 970,830 C900,865 830,890 780,940" fill="none" stroke="#a78bfa" stroke-width="1.4" stroke-dasharray="4,3" marker-end="url(#arrow-purple)"/>
+  <text x="920" y="820" fill="#a78bfa" font-size="9" text-anchor="middle">Claude elige la tool: crear_reserva / consultar_faq / ninguna</text>
+
+  <!-- Three-way routing note box -->
+  <rect x="560" y="960" width="330" height="150" rx="8" fill="#1a1d26" stroke="#7d8698" stroke-width="1.2"/>
+  <text x="725" y="985" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">main.py — ruteo de 3 caminos</text>
+  <text x="580" y="1008" fill="#a78bfa" font-size="9">① tool_use "crear_reserva"</text>
+  <text x="590" y="1021" fill="#7d8698" font-size="8">→ camino de reserva (arriba, Sección 2)</text>
+  <text x="580" y="1042" fill="#e8c15a" font-size="9">② tool_use "consultar_faq"</text>
+  <text x="590" y="1055" fill="#7d8698" font-size="8">→ camino de FAQ (abajo, este paso)</text>
+  <text x="580" y="1076" fill="#4ade80" font-size="9">③ sin tool_use (solo texto)</text>
+  <text x="590" y="1089" fill="#7d8698" font-size="8">→ falta un dato de reserva, repregunta (Día 5)</text>
+
+  <line x1="890" y1="1010" x2="1000" y2="960" stroke="#e8c15a" stroke-width="1.4" marker-end="url(#arrow-gold)"/>
+
+  <!-- search.py -->
+  <rect x="1000" y="960" width="230" height="100" rx="8" fill="#332707" stroke="#e8c15a" stroke-width="1.3"/>
+  <text x="1115" y="985" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">app/rag/search.py</text>
+  <text x="1115" y="1002" text-anchor="middle" fill="#f0d488" font-size="10">buscar_relevantes()</text>
+  <text x="1115" y="1017" text-anchor="middle" fill="#9ca8bd" font-size="8">similitud coseno (numpy)</text>
+  <text x="1115" y="1030" text-anchor="middle" fill="#9ca8bd" font-size="8">input_type="query" (Voyage)</text>
+  <text x="1115" y="1043" text-anchor="middle" fill="#9ca8bd" font-size="8">top_k = 3 fragmentos</text>
+
+  <!-- faq_embeddings.json -->
+  <rect x="1000" y="1120" width="230" height="90" rx="8" fill="#241800" stroke="#c98f3b" stroke-width="1.2" stroke-dasharray="4,3"/>
+  <text x="1115" y="1145" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">data/faq_embeddings.json</text>
+  <text x="1115" y="1162" text-anchor="middle" fill="#9ca8bd" font-size="9">6 fragmentos [texto, vector]</text>
+  <text x="1115" y="1176" text-anchor="middle" fill="#9ca8bd" font-size="9">vectores de 1024 dimensiones</text>
+  <text x="1115" y="1190" text-anchor="middle" fill="#7d8698" font-size="8">se carga 1 sola vez al arrancar</text>
+
+  <line x1="1115" y1="1060" x2="1115" y2="1118" stroke="#e8c15a" stroke-width="1.3" marker-end="url(#arrow-gold)"/>
+  <text x="1123" y="1093" fill="#e8c15a" font-size="8">lee al buscar</text>
+
+  <!-- responder_con_contexto (Claude 2da llamada) -->
+  <rect x="770" y="1170" width="200" height="110" rx="8" fill="#241338" stroke="#a78bfa" stroke-width="1.3"/>
+  <text x="870" y="1195" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Claude API</text>
+  <text x="870" y="1212" text-anchor="middle" fill="#c9b8f5" font-size="9">responder_con_contexto()</text>
+  <text x="870" y="1226" text-anchor="middle" fill="#7d8698" font-size="8">2da llamada, sin tools</text>
+  <text x="870" y="1240" text-anchor="middle" fill="#7d8698" font-size="8">contexto = fragmentos del FAQ</text>
+  <text x="870" y="1253" text-anchor="middle" fill="#7d8698" font-size="8">+ historial de conversaciones.py</text>
+
+  <path d="M1000,1010 C930,1050 880,1090 875,1168" fill="none" stroke="#e8c15a" stroke-width="1.3" marker-end="url(#arrow-gold)"/>
+  <text x="905" y="1120" fill="#e8c15a" font-size="8">fragmentos encontrados</text>
+
+  <path d="M770,1225 C650,1225 460,1150 460,1000 C460,920 600,960 700,958" fill="none" stroke="#a78bfa" stroke-width="1.3" stroke-dasharray="3,3" marker-end="url(#arrow-purple)"/>
+  <text x="490" y="875" fill="#a78bfa" font-size="8" text-anchor="middle">← vuelve por el mismo camino</text>
+  <text x="490" y="887" fill="#a78bfa" font-size="8" text-anchor="middle">de arriba: FastAPI → n8n → cliente</text>
+
+  <!-- guarda historial FAQ -->
+  <path d="M970,1200 L1300,1200 L1300,780 L1172,795" fill="none" stroke="#7d8698" stroke-width="1" stroke-dasharray="2,3" marker-end="url(#arrow-gray)"/>
+  <text x="1308" y="1000" fill="#7d8698" font-size="8" text-anchor="end" transform="rotate(-90,1308,1000)">guarda pregunta+respuesta en conversaciones.py también</text>
+
+  <!-- ============ OFFLINE / SETUP CLUSTER ============ -->
+  <text x="120" y="945" fill="#818cf8" font-size="12" font-weight="bold">Proceso offline (se corre a mano, no en cada mensaje)</text>
+
+  <rect x="60" y="960" width="180" height="90" rx="8" fill="#1a1730" stroke="#818cf8" stroke-width="1.3" stroke-dasharray="4,3"/>
+  <text x="150" y="990" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Voyage AI</text>
+  <text x="150" y="1007" text-anchor="middle" fill="#9ca8bd" font-size="9">servicio de embeddings</text>
+  <text x="150" y="1021" text-anchor="middle" fill="#7d8698" font-size="8">modelo voyage-4</text>
+
+  <line x1="150" y1="1050" x2="150" y2="1118" stroke="#818cf8" stroke-width="1.3" marker-end="url(#arrow-indigo)"/>
+
+  <rect x="60" y="1120" width="180" height="100" rx="8" fill="#1a1730" stroke="#818cf8" stroke-width="1.3" stroke-dasharray="4,3"/>
+  <text x="150" y="1148" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">app/rag/embeddings.py</text>
+  <text x="150" y="1165" text-anchor="middle" fill="#9ca8bd" font-size="9">genera y guarda vectores</text>
+  <text x="150" y="1179" text-anchor="middle" fill="#7d8698" font-size="8">input_type="document"</text>
+  <text x="150" y="1193" text-anchor="middle" fill="#7d8698" font-size="8">FAQ de ejemplo (Plan B, Día 6)</text>
+  <text x="150" y="1207" text-anchor="middle" fill="#c98f3b" font-size="8">se reemplaza por el FAQ real de Colo</text>
+
+  <line x1="240" y1="1170" x2="998" y2="1170" stroke="#818cf8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow-indigo)"/>
+  <text x="600" y="1163" fill="#818cf8" font-size="9" text-anchor="middle">escribe el archivo (Día 6, y de nuevo si el FAQ cambia)</text>
+
+  <!-- ============ LEGEND ============ -->
+  <rect x="30" y="1400" width="1260" height="270" rx="10" fill="#12141c" stroke="#2a2d38" stroke-width="1"/>
+  <text x="55" y="1430" fill="#f5f7fa" font-size="13" font-weight="bold">Cómo leer las flechas</text>
+
+  <line x1="55" y1="1455" x2="90" y2="1455" stroke="#8b93a5" stroke-width="1.4" marker-end="url(#arrow-gray)"/>
+  <text x="100" y="1459" fill="#9ca8bd" font-size="10">mensaje viajando hacia adelante (Secciones 1-2)</text>
+
+  <line x1="55" y1="1480" x2="90" y2="1480" stroke="#8b93a5" stroke-width="1.2" stroke-dasharray="3,3" marker-end="url(#arrow-gray)"/>
+  <text x="100" y="1484" fill="#9ca8bd" font-size="10">respuesta de vuelta hacia el cliente</text>
+
+  <line x1="55" y1="1505" x2="90" y2="1505" stroke="#f5a623" stroke-width="1.6" marker-end="url(#arrow-orange)"/>
+  <text x="100" y="1509" fill="#9ca8bd" font-size="10">llamada directa a la API de Meta (sin pasar por ngrok)</text>
+
+  <line x1="55" y1="1530" x2="90" y2="1530" stroke="#a78bfa" stroke-width="1.4" marker-end="url(#arrow-purple)"/>
+  <text x="100" y="1534" fill="#9ca8bd" font-size="10">llamada a la API de Claude (tools + system + historial)</text>
+
+  <line x1="55" y1="1555" x2="90" y2="1555" stroke="#4ade80" stroke-width="1.4" marker-end="url(#arrow-green)"/>
+  <text x="100" y="1559" fill="#9ca8bd" font-size="10">conexión resuelta / ida-vuelta con el cliente / guardado en Sheets</text>
+
+  <line x1="620" y1="1455" x2="655" y2="1455" stroke="#e8c15a" stroke-width="1.4" marker-end="url(#arrow-gold)"/>
+  <text x="665" y="1459" fill="#9ca8bd" font-size="10">camino de FAQ / RAG (Sección 3, nuevo en este chat)</text>
+
+  <line x1="620" y1="1480" x2="655" y2="1480" stroke="#818cf8" stroke-width="1.4" stroke-dasharray="4,3" marker-end="url(#arrow-indigo)"/>
+  <text x="665" y="1484" fill="#9ca8bd" font-size="10">proceso offline — se corre a mano, no en cada mensaje</text>
+
+  <line x1="620" y1="1505" x2="655" y2="1505" stroke="#7d8698" stroke-width="1.1" stroke-dasharray="2,3" marker-end="url(#arrow-gray)"/>
+  <text x="665" y="1509" fill="#9ca8bd" font-size="10">lectura/escritura de memoria de conversación (Día 5)</text>
+
+  <text x="55" y="1600" fill="#7d8698" font-size="10">Ver "explicacion-proyecto-completa.md" para el detalle de cada archivo, cada día y cada error resuelto.</text>
+  <text x="55" y="1618" fill="#7d8698" font-size="10">Base: diagrama de Secciones 1-2, extendido con Sección 3 (RAG casero, Días 6-8) en este chat.</text>
+
+  <text x="660" y="1660" text-anchor="middle" fill="#4a4f5c" font-size="11">Accelerate.ai — Restaurante Colo — Secciones 1, 2 y 3 completas · Día 8 · agosto 2026</text>
+</svg>
