@@ -1,8 +1,12 @@
 from typing import Any
 
+import anthropic
 from fastapi import FastAPI
 
 from app.claude_client import (
+    MSG_ERROR_BUSQUEDA,
+    MSG_ERROR_RUTEO,
+    MSG_SIN_MATCH,
     SYSTEM_PROMPT_BOT,
     client,
     extraer_texto,
@@ -14,7 +18,12 @@ from app.claude_client import (
 )
 from app.conversaciones import agregar_mensaje, conversaciones
 from app.models import MensajeEntrante
-from app.rag.search import buscar_relevantes, cargar_faq_vectores
+from app.rag.search import (
+    UMBRAL_SIMILITUD,
+    BusquedaFallidaError,
+    buscar_relevantes,
+    cargar_faq_vectores,
+)
 
 app = FastAPI()
 
@@ -31,13 +40,16 @@ print(f"FAQ cargado: {len(faq_vectores)} fragmentos", flush=True)
 async def recibir_mensaje(mensaje: MensajeEntrante) -> dict[str, Any]:
     historial = agregar_mensaje(mensaje.numero, "user", mensaje.texto)
 
-    response = client.messages.create(
-        model="claude-sonnet-5",
-        max_tokens=1024,
-        system=SYSTEM_PROMPT_BOT,
-        tools=[tool_crear_reserva, tool_consultar_faq],
-        messages=historial,
-    )
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-5",
+            max_tokens=1024,
+            system=SYSTEM_PROMPT_BOT,
+            tools=[tool_crear_reserva, tool_consultar_faq],
+            messages=historial,
+        )
+    except anthropic.APIError:
+        return {"respuesta": MSG_ERROR_RUTEO}
 
     # Camino 1 - reserva (Días 3-5). Se chequea primero, así que si Claude
     # devolviera las dos tools en la misma respuesta, gana crear_reserva.
@@ -52,8 +64,19 @@ async def recibir_mensaje(mensaje: MensajeEntrante) -> dict[str, Any]:
     # Camino 2 - pregunta de FAQ (RAG, Días 6-8): buscamos los fragmentos más
     # parecidos a la pregunta y se los pasamos a Claude como contexto.
     if hay_tool_use(response, "consultar_faq"):
-        fragmentos = buscar_relevantes(mensaje.texto, faq_vectores, top_k=3)
-        contexto = "\n".join(fragmentos)
+        try:
+            fragmentos = buscar_relevantes(mensaje.texto, faq_vectores, top_k=3)
+        except BusquedaFallidaError:
+            return {"respuesta": MSG_ERROR_BUSQUEDA}
+
+        # Si ni el mejor match llega al umbral, no hay contexto relevante:
+        # ni vale la pena gastar otra llamada a Claude para "responder" con
+        # fragmentos que no tienen que ver con la pregunta.
+        mejor_score = fragmentos[0][0]
+        if mejor_score < UMBRAL_SIMILITUD:
+            return {"respuesta": MSG_SIN_MATCH}
+
+        contexto = "\n".join(texto for _, texto in fragmentos)
         texto_respuesta = responder_con_contexto(contexto, historial)
         agregar_mensaje(mensaje.numero, "assistant", texto_respuesta)
         return {"respuesta": texto_respuesta}

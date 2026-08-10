@@ -3,8 +3,25 @@ import sys
 import time
 
 import numpy as np
+from voyageai.error import VoyageError
 
 from app.rag.embeddings import RUTA_EMBEDDINGS, vo
+
+# Medido el Día 9 con 8 preguntas reales contra el FAQ (ver
+# scripts/check_scores.py): el mejor match de una pregunta cubierta por el
+# FAQ dio 0.5635 de similitud, y el de una pregunta fuera de tema dio 0.3278.
+# El umbral es el punto medio entre ambos.
+UMBRAL_SIMILITUD = 0.45
+
+
+class BusquedaFallidaError(Exception):
+    """Se lanza cuando falla la llamada a Voyage para embedear la pregunta.
+
+    buscar_relevantes() la lanza en vez de devolver algún valor especial,
+    para no mezclar "no hubo resultados" (una lista vacía, un caso válido)
+    con "no se pudo ni intentar buscar" (un error real que el llamador tiene
+    que manejar distinto, con el mensaje de resguardo correspondiente).
+    """
 
 
 def cargar_faq_vectores() -> list[tuple[str, list[float]]]:
@@ -19,11 +36,19 @@ def similitud_coseno(a: list[float], b: list[float]) -> float:
 
 def buscar_relevantes(
     pregunta: str, faq_vectores: list[tuple[str, list[float]]], top_k: int = 3
-) -> list[str]:
-    emb_pregunta = vo.embed([pregunta], model="voyage-4", input_type="query").embeddings[0]
+) -> list[tuple[float, str]]:
+    """Devuelve los top_k fragmentos más parecidos a la pregunta, cada uno
+    junto con su score de similitud (antes se descartaba y solo quedaba el
+    texto) para que el llamador pueda compararlo contra UMBRAL_SIMILITUD.
+    """
+    try:
+        emb_pregunta = vo.embed([pregunta], model="voyage-4", input_type="query").embeddings[0]
+    except VoyageError as e:
+        raise BusquedaFallidaError("Falló el embedding de la pregunta") from e
+
     scores = [(similitud_coseno(emb_pregunta, vector), texto) for texto, vector in faq_vectores]
     scores.sort(reverse=True)
-    return [texto for _, texto in scores[:top_k]]
+    return scores[:top_k]
 
 
 if __name__ == "__main__":
@@ -46,5 +71,5 @@ if __name__ == "__main__":
             time.sleep(20)
         resultados = buscar_relevantes(pregunta, faq_vectores)
         print(f"\nPregunta: {pregunta}")
-        for j, texto in enumerate(resultados, start=1):
-            print(f"  {j}. {texto}")
+        for j, (score, texto) in enumerate(resultados, start=1):
+            print(f"  {j}. ({score:.4f}) {texto}")

@@ -8,6 +8,12 @@ load_dotenv()
 
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
+# Mensajes de resguardo del Día 9: se muestran cuando falla una llamada
+# externa (Claude o Voyage) y el bot no puede seguir el flujo normal.
+MSG_ERROR_RUTEO = "Perdón, tuve un problema para procesar tu mensaje. ¿Me lo repetís?"
+MSG_ERROR_BUSQUEDA = "No pude buscar esa información ahora mismo, probá de nuevo en un momento."
+MSG_SIN_MATCH = "No tengo esa información a mano, te va a responder alguien del local."
+
 SYSTEM_PROMPT_BOT = (
     "Sos el asistente de un restaurante y atendés a los clientes por "
     "WhatsApp. Tenés dos herramientas y siempre tenés que usar la que "
@@ -110,12 +116,15 @@ def responder_con_contexto(contexto: str, historial: list[dict[str, str]]) -> st
     # Sin tools acá: en esta llamada solo queremos texto, no otra decisión de
     # ruteo. Va el historial completo para que el modelo entienda repreguntas
     # encadenadas ("¿y los domingos?").
-    response = client.messages.create(
-        model="claude-sonnet-5",
-        max_tokens=1024,
-        system=system_prompt,
-        messages=historial,
-    )
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-5",
+            max_tokens=1024,
+            system=system_prompt,
+            messages=historial,
+        )
+    except anthropic.APIError:
+        return MSG_ERROR_BUSQUEDA
 
     return extraer_texto(response)
 
