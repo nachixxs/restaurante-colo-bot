@@ -76,7 +76,7 @@ Construido en 11 días de estudio guiado, del 4 al 14 de agosto de 2026.
 - [x] Día 8 (11 ago) — Unificar reserva + FAQ
 
 ### Sección 4 — Pulido y testing
-- [ ] Día 9 (12 ago) — Manejo de errores
+- [x] Día 9 (12 ago) — Manejo de errores
 - [ ] Día 10 (13 ago) — Testing con guiones reales
 - [ ] Día 11 (14 ago) — Corrección final
 
