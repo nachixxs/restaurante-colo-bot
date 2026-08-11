@@ -7,8 +7,8 @@ from app.claude_client import (
     MSG_ERROR_BUSQUEDA,
     MSG_ERROR_RUTEO,
     MSG_SIN_MATCH,
-    SYSTEM_PROMPT_BOT,
     client,
+    construir_system_prompt,
     extraer_texto,
     hay_tool_use,
     procesar_respuesta_reserva,
@@ -44,7 +44,9 @@ async def recibir_mensaje(mensaje: MensajeEntrante) -> dict[str, Any]:
         response = client.messages.create(
             model="claude-sonnet-5",
             max_tokens=1024,
-            system=SYSTEM_PROMPT_BOT,
+            # Se arma acá, dentro del request, para que la fecha de hoy que
+            # ve Claude sea la del momento del mensaje y no la del arranque.
+            system=construir_system_prompt(),
             tools=[tool_crear_reserva, tool_consultar_faq],
             messages=historial,
         )

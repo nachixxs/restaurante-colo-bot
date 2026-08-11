@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import Any
 
 import anthropic
@@ -39,6 +40,43 @@ SYSTEM_PROMPT_BOT = (
     "el restaurante. Nunca contestes esas preguntas de memoria: no sabés "
     "nada del restaurante que no venga de consultar_faq."
 )
+
+# El nombre del día se resuelve a mano y no con locale: en Windows los locales
+# en español no están garantizados (dependen de qué tenga instalado el sistema)
+# y setlocale puede fallar o devolver el día en inglés según la máquina.
+DIAS_SEMANA: dict[int, str] = {
+    0: "lunes",
+    1: "martes",
+    2: "miércoles",
+    3: "jueves",
+    4: "viernes",
+    5: "sábado",
+    6: "domingo",
+}
+
+
+def construir_system_prompt() -> str:
+    """Arma el system prompt del ruteo con la fecha de hoy incrustada.
+
+    Se llama en cada request en vez de calcularse una sola vez al importar el
+    módulo: el servidor puede quedar levantado varios días seguidos, y una
+    fecha congelada al arrancar dejaría a Claude resolviendo "mañana" contra
+    el día en que se prendió uvicorn.
+    """
+    hoy = datetime.now()
+    fecha_hoy = f"{DIAS_SEMANA[hoy.weekday()]} {hoy.day:02d}/{hoy.month:02d}/{hoy.year}"
+
+    return (
+        f"{SYSTEM_PROMPT_BOT}\n\n"
+        f"Hoy es {fecha_hoy}.\n"
+        "Cuando el cliente exprese la fecha de forma relativa ('mañana', "
+        "'pasado mañana', 'el viernes', 'la semana que viene'), resolvela vos "
+        "a la fecha concreta en formato DD/MM/AAAA a partir de la fecha de hoy "
+        "y guardá esa fecha resuelta en el campo fecha de crear_reserva, nunca "
+        "la expresión relativa tal cual. Si lo que dice el cliente es ambiguo "
+        "y no podés resolverlo con certeza, dejá el campo fecha tal como lo "
+        "dijo él en vez de inventar una fecha."
+    )
 
 tool_crear_reserva: dict = {
     "name": "crear_reserva",
@@ -92,7 +130,7 @@ def probar_extraccion(mensaje_prueba: str) -> anthropic.types.Message:
     response = client.messages.create(
         model="claude-sonnet-5",
         max_tokens=1024,
-        system=SYSTEM_PROMPT_BOT,
+        system=construir_system_prompt(),
         tools=[tool_crear_reserva],
         messages=[{"role": "user", "content": mensaje_prueba}],
     )
