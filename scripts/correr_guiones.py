@@ -20,6 +20,11 @@ from app.claude_client import MSG_ERROR_BUSQUEDA, MSG_ERROR_RUTEO, MSG_SIN_MATCH
 
 URL = "http://127.0.0.1:8000/webhook"
 
+# La consola de Windows usa cp1252 por defecto y revienta al imprimir emojis
+# (G17) o incluso tildes. Sin esto, un UnicodeEncodeError cortaría la corrida a
+# mitad de camino por un problema de la terminal, no del bot.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 # Espera entre mensajes. La búsqueda del FAQ pega a Voyage, que tiene rate limit
 # bajo en el plan gratuito: sin esta pausa aparece MSG_ERROR_BUSQUEDA en guiones
 # donde no corresponde. Se espera entre todos los mensajes y no solo entre los
