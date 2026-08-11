@@ -1,0 +1,90 @@
+# Guiones de testing — 18 casos reales
+
+Batería de testing del **Día 10**, escrita para probar el bot end-to-end contra
+`POST /webhook` con mensajes tal como los escribiría un cliente real por WhatsApp:
+minúsculas, sin tildes, con typos, con emojis y con datos incompletos.
+
+> **Nota:** este archivo se escribió de forma retroactiva al abrir el Día 11. Los
+> guiones son los que se corrieron efectivamente en la sesión del Día 10, pero en
+> aquel momento quedaron solo en la conversación y nunca se commitearon.
+
+## Cómo se corren
+
+Cada guion usa **su propio número de teléfono**, porque la memoria de conversación
+(`app/conversaciones.py`) es un diccionario en RAM indexado por número: reusar un
+número arrastraría el historial de otro guion y contaminaría el resultado.
+
+Los guiones **multi-mensaje** (G4, G6, G16) mandan sus mensajes en orden, con el
+mismo número, para ejercitar justamente esa memoria.
+
+Reglas de la corrida:
+
+- Espaciar **20-25 segundos** entre cualquier par de mensajes que peguen a Voyage
+  (los que van al camino de FAQ), incluidos los que están dentro de un guion
+  multi-mensaje. Sin ese espaciado, el rate limit de Voyage hace aparecer
+  `MSG_ERROR_BUSQUEDA` en guiones donde no corresponde.
+- Verificar **estructuralmente**, nunca por el tono del texto: comparación exacta
+  contra `MSG_SIN_MATCH` / `MSG_ERROR_BUSQUEDA` / `MSG_ERROR_RUTEO` importados de
+  `app.claude_client`, y presencia o ausencia de la clave `"reserva"` en el JSON
+  para saber qué tool usó Claude.
+- Levantar el servidor limpio antes de empezar, para que ningún número arrastre
+  historial de una corrida anterior.
+
+## Los 18 guiones
+
+### Camino de reserva (G1-G6)
+
+| # | Número | Mensaje(s) | Qué pone a prueba |
+|---|---|---|---|
+| G1 | 5492625001 | `hola queria reservar para el sabado a la noche, somos 4` | Falta la hora exacta ("a la noche" no es una hora) |
+| G2 | 5492625002 | `necesito una mesa para dos personas mañana a las 21` | Fecha relativa + personas escritas en letras |
+| G3 | 5492625003 | `reserva a nombre de Martín, para 3, el viernes a las 22hs` | Reserva completa de una, con nombre |
+| G4 | 5492625004 | 1) `quiero reservar una mesa`<br>2) `para 6, el domingo`<br>3) `a las 20:30` | Datos que llegan de a poco en 3 mensajes (memoria) |
+| G5 | 5492625005 | `para el sabado a las 21hs` | Falta la cantidad de personas |
+| G6 | 5492625006 | 1) `mesa para 4 el sabado a las 21`<br>2) `che en realidad somos 5, se suma uno mas` | Modificar una reserva ya confirmada |
+
+### Camino de FAQ (G7-G15)
+
+| # | Número | Mensaje | Qué pone a prueba |
+|---|---|---|---|
+| G7 | 5492625007 | `che tenes algo pa comer si soy celiaco?` | Sin TACC, en jerga informal |
+| G8 | 5492625008 | `hasta que hora abris los sabados` | Horarios, sin signo de pregunta |
+| G9 | 5492625009 | `tenes wifi ahi?` | Dato puntual del FAQ |
+| G10 | 5492625010 | `aceptan debito?` | Medios de pago |
+| G11 | 5492625011 | `puedo ir en auto, hay donde estacionar?` | Estacionamiento, pregunta indirecta |
+| G12 | 5492625012 | `llevo a mi perrita, hay problema?` | Mascotas, sin nombrar la palabra clave |
+| G13 | 5492625013 | `hacen envios a domicilio?` | **Fuera del FAQ**: tiene que dar `MSG_SIN_MATCH` |
+| G14 | 5492625014 | `tienen mesa para cumpleaños, somos re grupo grande?` | Ambiguo entre reserva y consulta |
+| G15 | 5492625015 | `abren los feriados?` | **Fuera del FAQ**: tiene que dar `MSG_SIN_MATCH` |
+
+### Casos límite (G16-G18)
+
+| # | Número | Mensaje(s) | Qué pone a prueba |
+|---|---|---|---|
+| G16 | 5492625099 | 1) `tenes wifi?`<br>2) `dale, aparte quiero reservar para 3 el viernes a las 21` | Cambiar de FAQ a reserva en la misma conversación |
+| G17 | 5492625017 | `🍕😋` | Mensaje sin texto útil, solo emojis |
+| G18 | 5492625018 | `hola buenas tardes disculpen la hora quería consultar si tienen mesa libre para el sabado que viene somos con mi señora y mis dos hijos osea 4 en total sería como a las 21 o 21:30 mas o menos, gracias` | Mensaje largo, cantidad implícita ("mi señora y mis dos hijos"), hora ambigua |
+
+> G16 usa el número **5492625099** y no el 5492625016: en la corrida del Día 10 ese
+> número quedó con historial contaminado en memoria, y se cambió para que el guion
+> arranque limpio.
+
+## Casos degenerados
+
+No forman parte de los 18 guiones. Se probaron por primera vez al cerrar el Día 9 y
+se reconfirman cada vez que se toca el system prompt. Los tres tienen que devolver
+HTTP 200 con una respuesta coherente y cero tracebacks.
+
+| Caso | `texto` |
+|---|---|
+| D1 | `""` (string vacío) |
+| D2 | `" "` (solo espacios) |
+| D3 | `"\n\t "` (solo tabs y saltos de línea) |
+
+## Hallazgos del Día 10
+
+| # | Guion | Hallazgo | Estado |
+|---|---|---|---|
+| G2 | Fecha relativa | El campo `fecha` quedaba literal (`"mañana"`), inútil para quien mire la planilla de Sheets días después | **Corregido en el Día 11**: el system prompt de ruteo lleva la fecha de hoy y resuelve las expresiones relativas a `DD/MM/AAAA` |
+| G14 | Ruteo ambiguo | "tienen mesa para cumpleaños" sesga el ruteo hacia el camino de reserva aunque sea una consulta | **Limitación conocida**, no corregida |
+| G6 | Modificar reserva | Al confirmar una reserva se borra el historial del número, así que el mensaje que la corrige arranca sin contexto | **Gap de producción conocido**: haría falta una tool de modificación de reserva, fuera del alcance de estos 11 días |
