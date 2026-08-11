@@ -81,10 +81,49 @@ HTTP 200 con una respuesta coherente y cero tracebacks.
 | D2 | `" "` (solo espacios) |
 | D3 | `"\n\t "` (solo tabs y saltos de línea) |
 
+## Resultado de la corrida de cierre (Día 11)
+
+Corrida única de punta a punta, servidor recién levantado (memoria de conversación
+vacía), 25s entre mensajes. Verificación estructural: clave `"reserva"` en el JSON
+para la tool, comparación exacta contra los mensajes de resguardo para el resto.
+
+| # | HTTP | Tool | Resultado |
+|---|---|---|---|
+| D1 `""` | 200 | — | `MSG_ERROR_RUTEO` exacto |
+| D2 `" "` | 200 | — | `MSG_ERROR_RUTEO` exacto |
+| D3 `"\n\t "` | 200 | — | `MSG_ERROR_RUTEO` exacto |
+| G1 | 200 | — | Pide la hora exacta; resuelve "el sábado" a 15/08/2026 |
+| G2 | 200 | `crear_reserva` | `fecha: 11/08/2026` — **el bug del Día 10 quedó corregido** |
+| G3 | 200 | `crear_reserva` | `{14/08/2026, 22:00, 3, Martín}`, fecha resuelta |
+| G4 | 200 | `crear_reserva` (msg 3) | `{16/08/2026, 20:30, 6}` sin perder datos de los mensajes previos |
+| G5 | 200 | — | Pide la cantidad de personas; sin el bug viejo de "el el sábado" |
+| G6 | 200 | `crear_reserva` (msg 1) | Msg 2 pierde el contexto: **gap conocido**, ver hallazgos |
+| G7 | 200 | — | Responde sin TACC desde el FAQ |
+| G8 | 200 | — | Responde horario del sábado desde el FAQ |
+| G9 | 200 | — | Responde wifi desde el FAQ |
+| G10 | 200 | — | Responde medios de pago desde el FAQ |
+| G11 | 200 | — | Responde estacionamiento desde el FAQ |
+| G12 | 200 | — | Responde mascotas desde el FAQ |
+| G13 | 200 | — | `MSG_SIN_MATCH` exacto (fuera del FAQ) |
+| G14 | 200 | — | `MSG_SIN_MATCH` exacto — esta vez ruteó a FAQ, ver hallazgos |
+| G15 | 200 | — | `MSG_SIN_MATCH` exacto (fuera del FAQ) |
+| G16 | 200 | `crear_reserva` (msg 2) | FAQ y después reserva en la misma conversación, sin mezclarse |
+| G17 | 200 | — | Repregunta qué necesita el cliente, sin romperse con los emojis |
+| G18 | 200 | — | Mantiene personas=4; pide la hora y **qué sábado** (ver hallazgos) |
+
+Ningún `MSG_ERROR_BUSQUEDA` en toda la corrida: el espaciado de 25s alcanza para
+el rate limit de Voyage.
+
 ## Hallazgos del Día 10
 
 | # | Guion | Hallazgo | Estado |
 |---|---|---|---|
 | G2 | Fecha relativa | El campo `fecha` quedaba literal (`"mañana"`), inútil para quien mire la planilla de Sheets días después | **Corregido en el Día 11**: el system prompt de ruteo lleva la fecha de hoy y resuelve las expresiones relativas a `DD/MM/AAAA` |
-| G14 | Ruteo ambiguo | "tienen mesa para cumpleaños" sesga el ruteo hacia el camino de reserva aunque sea una consulta | **Limitación conocida**, no corregida |
+| G14 | Ruteo ambiguo | "tienen mesa para cumpleaños" sesga el ruteo hacia el camino de reserva aunque sea una consulta | **Limitación conocida**, no corregida. En la corrida del Día 11 el síntoma no se reprodujo (ruteó a FAQ y dio `MSG_SIN_MATCH`), así que el guion es inestable: cae para un lado o para el otro |
 | G6 | Modificar reserva | Al confirmar una reserva se borra el historial del número, así que el mensaje que la corrige arranca sin contexto | **Gap de producción conocido**: haría falta una tool de modificación de reserva, fuera del alcance de estos 11 días |
+
+### Hallazgo nuevo del Día 11
+
+| # | Guion | Hallazgo | Estado |
+|---|---|---|---|
+| G18 | "el sabado que viene" | El guion es inestable entre dos comportamientos válidos: a veces resuelve la fecha a 15/08/2026 y pregunta solo la hora, y a veces pide que el cliente aclare de qué sábado habla. Los dos salen de la misma instrucción del prompt, que manda resolver las fechas relativas pero **no** inventar cuando son ambiguas — y "el sábado que viene" lo es de verdad (¿el de esta semana o el de la siguiente?) | **Aceptado**: preguntar es preferible a escribir una fecha equivocada en la planilla |
