@@ -20,7 +20,7 @@ Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 
 - Un único endpoint `POST /webhook` recibe todo desde n8n — no crear endpoints paralelos
 - La decisión reserva-vs-pregunta la toma Claude vía tool use, nunca un `if` manual buscando palabras clave
-- Memoria de conversación: diccionario en memoria por número de teléfono (sin base de datos — alcanza para el volumen de estos 11 días de prueba)
+- Memoria de conversación: diccionario en memoria por número de teléfono (sin base de datos — alcanza para el volumen de estos días de construcción: 11 días de guía, completados en 7 días de calendario reales, del 4 al 10 de agosto de 2026)
 
 ## IMPORTANT
 
