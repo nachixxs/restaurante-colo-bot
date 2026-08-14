@@ -30,9 +30,8 @@ Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 
 ## Actualización de progreso
 
-- Al terminar el "Resultado esperado al cerrar el día" de cualquier día de la guía, tildá el checkbox correspondiente en README.md (sección "Estado del proyecto") antes de hacer el commit del día.
-- El commit de cierre de día tiene que incluir ese cambio en README.md junto con el código — no como commit aparte.
-- Nunca tildes un día que no esté realmente terminado, aunque el código compile — el checkbox refleja el resultado esperado cumplido, no solo "escribí algo".
+- El estado del proyecto se trackea en el vault (`02-Projects/El-Parador-Bot/Overview.md`), no en este README — este repo es portfolio público, no el lugar de seguimiento de trabajo.
+- Nunca marces como terminado un día que no lo esté realmente, aunque el código compile — el estado refleja el resultado esperado cumplido, no solo "escribí algo".
 
 ## Git y GitHub
 
