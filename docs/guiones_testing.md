@@ -120,7 +120,7 @@ el rate limit de Voyage.
 |---|---|---|---|
 | G2 | Fecha relativa | El campo `fecha` quedaba literal (`"mañana"`), inútil para quien mire la planilla de Sheets días después | **Corregido en el Día 11**: el system prompt de ruteo lleva la fecha de hoy y resuelve las expresiones relativas a `DD/MM/AAAA` |
 | G14 | Ruteo ambiguo | "tienen mesa para cumpleaños" sesga el ruteo hacia el camino de reserva aunque sea una consulta | **Limitación conocida**, no corregida. En la corrida del Día 11 el síntoma no se reprodujo (ruteó a FAQ y dio `MSG_SIN_MATCH`), así que el guion es inestable: cae para un lado o para el otro |
-| G6 | Modificar reserva | Al confirmar una reserva se borra el historial del número, así que el mensaje que la corrige arranca sin contexto | **Gap de producción conocido**: haría falta una tool de modificación de reserva, fuera del alcance de estos 11 días |
+| G6 | Modificar reserva | Al confirmar una reserva se borra el historial del número, así que el mensaje que la corrige arranca sin contexto | **Gap de producción conocido**: haría falta una tool de modificación de reserva, fuera del alcance de estos 11 días de guía |
 
 ### Hallazgo nuevo del Día 11
 
