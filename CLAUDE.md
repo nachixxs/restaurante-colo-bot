@@ -1,4 +1,4 @@
-# Restaurante Colo — Bot de WhatsApp con IA
+# Bot de WhatsApp con IA para un restaurante
 
 Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 
@@ -30,7 +30,7 @@ Ver @README.md para contexto completo del proyecto, arquitectura y stack.
 
 ## Actualización de progreso
 
-- El estado del proyecto se trackea en el vault (`02-Projects/El-Parador-Bot/Overview.md`), no en este README — este repo es portfolio público, no el lugar de seguimiento de trabajo.
+- El estado del proyecto se trackea en el vault de la agencia, no en este README — este repo es portfolio público, no el lugar de seguimiento de trabajo.
 - Nunca marces como terminado un día que no lo esté realmente, aunque el código compile — el estado refleja el resultado esperado cumplido, no solo "escribí algo".
 
 ## Git y GitHub

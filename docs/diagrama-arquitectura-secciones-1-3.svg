@@ -11,7 +11,7 @@
   <rect x="0" y="0" width="1320" height="1700" fill="#0a0e1a"/>
 
   <!-- TITLE -->
-  <text x="660" y="34" text-anchor="middle" fill="#f5f7fa" font-size="22" font-weight="bold">Restaurante Colo Bot — cómo se conecta todo</text>
+  <text x="660" y="34" text-anchor="middle" fill="#f5f7fa" font-size="22" font-weight="bold">Bot del restaurante — cómo se conecta todo</text>
   <text x="660" y="56" text-anchor="middle" fill="#8b93a5" font-size="12">Cliente · Meta WhatsApp Cloud API · ngrok · n8n · FastAPI · Claude API · Google Sheets · Voyage AI (RAG) — Días 1 a 8 (Secciones 1, 2 y 3)</text>
 
   <!-- ============ SECCIÓN 1-2 BAND LABEL ============ -->
@@ -105,7 +105,7 @@
   <!-- Google Sheets -->
   <rect x="770" y="600" width="170" height="90" rx="8" fill="#0f2818" stroke="#22c55e" stroke-width="1.3"/>
   <text x="855" y="625" text-anchor="middle" fill="#f5f7fa" font-size="12" font-weight="bold">Google Sheets</text>
-  <text x="855" y="642" text-anchor="middle" fill="#9ca8bd" font-size="9">Reservas Restaurante Colo</text>
+  <text x="855" y="642" text-anchor="middle" fill="#9ca8bd" font-size="9">Reservas del restaurante</text>
   <text x="855" y="656" text-anchor="middle" fill="#7d8698" font-size="8">nodo: Append row (n8n)</text>
 
   <line x1="855" y1="545" x2="855" y2="598" stroke="#4ade80" stroke-width="1.3" marker-end="url(#arrow-green)"/>
@@ -193,7 +193,7 @@
   <text x="150" y="1165" text-anchor="middle" fill="#9ca8bd" font-size="9">genera y guarda vectores</text>
   <text x="150" y="1179" text-anchor="middle" fill="#7d8698" font-size="8">input_type="document"</text>
   <text x="150" y="1193" text-anchor="middle" fill="#7d8698" font-size="8">FAQ de ejemplo (Plan B, Día 6)</text>
-  <text x="150" y="1207" text-anchor="middle" fill="#c98f3b" font-size="8">se reemplaza por el FAQ real de Colo</text>
+  <text x="150" y="1207" text-anchor="middle" fill="#c98f3b" font-size="8">se reemplaza por el FAQ real del cliente</text>
 
   <line x1="240" y1="1170" x2="998" y2="1170" stroke="#818cf8" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#arrow-indigo)"/>
   <text x="600" y="1163" fill="#818cf8" font-size="9" text-anchor="middle">escribe el archivo (Día 6, y de nuevo si el FAQ cambia)</text>
@@ -229,5 +229,5 @@
   <text x="55" y="1600" fill="#7d8698" font-size="10">Ver "explicacion-proyecto-completa.md" para el detalle de cada archivo, cada día y cada error resuelto.</text>
   <text x="55" y="1618" fill="#7d8698" font-size="10">Base: diagrama de Secciones 1-2, extendido con Sección 3 (RAG casero, Días 6-8) en este chat.</text>
 
-  <text x="660" y="1660" text-anchor="middle" fill="#4a4f5c" font-size="11">Accelerate.ai — Restaurante Colo — Secciones 1, 2 y 3 completas · Día 8 · agosto 2026</text>
+  <text x="660" y="1660" text-anchor="middle" fill="#4a4f5c" font-size="11">Accelerate.ai — Bot de restaurante — Secciones 1, 2 y 3 completas · Día 8 · agosto 2026</text>
 </svg>

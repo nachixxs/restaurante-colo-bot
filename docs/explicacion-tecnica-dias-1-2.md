@@ -1,6 +1,6 @@
 # Cómo funciona todo — Día 1 y Día 2 explicados en profundidad
 
-> Este documento es para entender, con calma y de una vez, cómo se conecta cada pieza que armamos: FastAPI, ngrok, n8n y Meta. Está pensado para leerse completo, no como referencia rápida. Al final hay una versión resumida para Colo.
+> Este documento es para entender, con calma y de una vez, cómo se conecta cada pieza que armamos: FastAPI, ngrok, n8n y Meta. Está pensado para leerse completo, no como referencia rápida. Al final hay una versión resumida para el cliente, sin tecnicismos.
 
 ---
 
@@ -117,7 +117,7 @@ Podríamos, en teoría, hacer que Meta le hable directo a FastAPI. Pero n8n se p
 
 n8n funciona con **workflows**: una secuencia de **nodos** conectados con flechas, donde cada nodo hace una cosa puntual y le pasa el resultado al siguiente.
 
-### El workflow que armamos: "Restaurante Colo - Dia 2 - WhatsApp a FastAPI"
+### El workflow que armamos: "Restaurante - Dia 2 - WhatsApp a FastAPI"
 
 ```mermaid
 graph TD
@@ -138,7 +138,7 @@ graph TD
 ### Nodo por nodo
 
 **Webhook GET (verificación Meta)**
-Escucha en `https://[tu-dominio-ngrok]/webhook/restaurante-colo-dia2`, solo peticiones GET. Cuando registrás el webhook en el panel de Meta, Meta manda una petición de prueba con tres parámetros: `hub.mode`, `hub.verify_token`, y `hub.challenge`. Este nodo la recibe y se la pasa al siguiente.
+Escucha en `https://[tu-dominio-ngrok]/webhook/restaurante-dia2`, solo peticiones GET. Cuando registrás el webhook en el panel de Meta, Meta manda una petición de prueba con tres parámetros: `hub.mode`, `hub.verify_token`, y `hub.challenge`. Este nodo la recibe y se la pasa al siguiente.
 
 **Verificar token (nodo IF)**
 Compara el `hub.verify_token` que mandó Meta contra un valor fijo que vos definiste (el *verify token*, que no se versiona). Es una contraseña simple, inventada por vos, que confirma que quien está registrando el webhook sos realmente vos (o alguien con acceso al panel de Meta), no un tercero cualquiera.
@@ -258,7 +258,7 @@ sequenceDiagram
 
     Cliente->>Meta: "hola"
     Note over Meta: Capa 1 recibe,<br/>Capa 2 (WABA) debe saber<br/>a qué App reenviar
-    Meta->>ngrok: POST /webhook/restaurante-colo-dia2
+    Meta->>ngrok: POST /webhook/restaurante-dia2
     ngrok->>n8n: reenvía a localhost:5678
     n8n->>n8n: Webhook POST → extrae numero y texto
     n8n->>FastAPI: POST http://127.0.0.1:8000/webhook
@@ -279,7 +279,7 @@ sequenceDiagram
 
 ---
 
-## 9. Para Colo — resumen sin tecnicismos
+## 9. Para el cliente — resumen sin tecnicismos
 
 Anoche conectamos el bot a un número de WhatsApp real de prueba. El camino que recorre un mensaje es: tu WhatsApp → los servidores de Meta (la empresa dueña de WhatsApp) → una herramienta llamada n8n que actúa de intermediario → nuestro programa en Python (FastAPI) → y la respuesta vuelve por el mismo camino.
 

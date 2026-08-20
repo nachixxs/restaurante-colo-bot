@@ -1,9 +1,9 @@
 {
-  "name": "Restaurante Colo - Dia 2 - WhatsApp a FastAPI",
+  "name": "Restaurante - Dia 2 - WhatsApp a FastAPI",
   "nodes": [
     {
       "parameters": {
-        "path": "restaurante-colo-dia2",
+        "path": "restaurante-dia2",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -15,7 +15,7 @@
         240,
         160
       ],
-      "webhookId": "restaurante-colo-dia2-get"
+      "webhookId": "restaurante-dia2-get"
     },
     {
       "parameters": {
@@ -90,7 +90,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "restaurante-colo-dia2",
+        "path": "restaurante-dia2",
         "options": {}
       },
       "id": "webhook-post",
@@ -101,7 +101,7 @@
         240,
         640
       ],
-      "webhookId": "restaurante-colo-dia2-post"
+      "webhookId": "restaurante-dia2-post"
     },
     {
       "parameters": {
@@ -288,7 +288,7 @@
       ],
       "id": "append-row-in-sheet",
       "name": "Append row in sheet",
-      "notes": "Guarda cada reserva confirmada (fecha, hora, personas, nombre, numero) en la planilla 'Reservas Restaurante Colo', pestaña 'Reservas'. El numero se toma del webhook original (no de la respuesta de FastAPI), y el resto de datos.reserva que arma app/claude_client.py. Solo se llega aca si el nodo 'If' confirma que hay reserva (no es una respuesta de FAQ).",
+      "notes": "Guarda cada reserva confirmada (fecha, hora, personas, nombre, numero) en la planilla 'Reservas del restaurante', pestaña 'Reservas'. El numero se toma del webhook original (no de la respuesta de FastAPI), y el resto de datos.reserva que arma app/claude_client.py. Solo se llega aca si el nodo 'If' confirma que hay reserva (no es una respuesta de FAQ).",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "<GOOGLE_SHEETS_CREDENTIAL_ID>",

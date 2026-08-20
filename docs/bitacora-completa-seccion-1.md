@@ -1,6 +1,6 @@
 # Bitácora completa — Sección 1 (Día 1 y Día 2)
 
-> Registro cronológico de todo lo trabajado, en el orden real en que fue pasando — pensado para que Colo (o cualquiera) pueda seguir el hilo completo de principio a fin, incluyendo cada tropiezo y cómo se resolvió.
+> Registro cronológico de todo lo trabajado, en el orden real en que fue pasando — pensado para que el cliente (o cualquiera) pueda seguir el hilo completo de principio a fin, incluyendo cada tropiezo y cómo se resolvió.
 
 ---
 
@@ -8,12 +8,12 @@
 
 **Qué se hizo:**
 - Se armó una carpeta madre `accelerate-ai/` con subcarpetas `clientes/`, `plantillas/`, `docs/`, pensada para organizar futuros clientes de la agencia sin mezclar proyectos.
-- Se creó la estructura completa del proyecto `restaurante-colo-bot/` (carpetas `app/`, `data/`, `docs/`, archivos base) usando Claude Code.
+- Se creó la estructura completa del proyecto `restaurante-bot/` (carpetas `app/`, `data/`, `docs/`, archivos base) usando Claude Code.
 - Se investigaron y aplicaron buenas prácticas actualizadas para `CLAUDE.md` (instrucciones para Claude Code) y `README.md` (documentación pública del repo).
 - Se creó una Skill personalizada (`seguir-guia`) para que Claude Code lea la guía de estudio y construya cada día con criterio propio, en vez de copiar código literal — separando "qué hay que lograr" de "cómo está implementado".
 
 **Error encontrado — Repositorio de GitHub mal armado:**
-- Al crear el repo con `gh repo create`, quedó **público** (sin querer) y con una **carpeta anidada de más** (`clientes/restaurante-colo/restaurante-colo-bot/` dentro del propio repo, en vez de los archivos en la raíz) — porque el comando se corrió parado en la carpeta madre, no dentro del proyecto.
+- Al crear el repo con `gh repo create`, quedó **público** (sin querer) y con una **carpeta anidada de más** (`clientes/<cliente>/restaurante-bot/` dentro del propio repo, en vez de los archivos en la raíz) — porque el comando se corrió parado en la carpeta madre, no dentro del proyecto.
 - **Solución:** se borró el repo remoto y el `.git` local mal ubicado, y se rehizo todo manualmente (`git init` parado en la carpeta correcta, conexión a un repo nuevo), confirmando con capturas que la estructura quedara limpia.
 
 ---

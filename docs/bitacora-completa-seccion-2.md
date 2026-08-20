@@ -6,7 +6,7 @@ Confirmación real por WhatsApp + guardado de cada reserva en Google Sheets.
 
 ### Error 0 — Activar un workflow vía API de n8n no siempre registra el webhook en memoria
 
-**Problema:** un workflow marcado como `active: true` en la base de datos de n8n (activado vía API, no desde la UI) no responde a su webhook — devuelve `404 "webhook not registered"` aunque la API confirme que está activo. Se detectó primero al retomar la sesión (el workflow real "Restaurante Colo - Dia 2" había quedado activo de la noche anterior, pero recién se confirmó que escuchaba de verdad tras reiniciar n8n al arrancar el entorno) y se volvió a reproducir dos veces más hoy, con el workflow temporal de la planilla: activarlo vía API (`POST /api/v1/workflows/{id}/activate`) dejó la fila `active=true` en la base, pero el webhook seguía devolviendo 404 hasta reiniciar el proceso completo de n8n.
+**Problema:** un workflow marcado como `active: true` en la base de datos de n8n (activado vía API, no desde la UI) no responde a su webhook — devuelve `404 "webhook not registered"` aunque la API confirme que está activo. Se detectó primero al retomar la sesión (el workflow real "el restaurante - Dia 2" había quedado activo de la noche anterior, pero recién se confirmó que escuchaba de verdad tras reiniciar n8n al arrancar el entorno) y se volvió a reproducir dos veces más hoy, con el workflow temporal de la planilla: activarlo vía API (`POST /api/v1/workflows/{id}/activate`) dejó la fila `active=true` en la base, pero el webhook seguía devolviendo 404 hasta reiniciar el proceso completo de n8n.
 
 **Causa:** n8n mantiene un registro de webhooks activos en memoria (el proceso Node corriendo), separado de la fila `active` en la base de datos. Activar un workflow por API actualiza la base, pero no siempre dispara el registro del webhook en memoria del proceso ya corriendo — a diferencia de activar desde la UI, que si dispara ese registro en el momento. La única forma confirmada de sincronizar ambos es reiniciar el proceso de n8n, que al arrancar recorre todos los workflows `active=true` y los registra de una.
 
@@ -16,7 +16,7 @@ Confirmación real por WhatsApp + guardado de cada reserva en Google Sheets.
 
 ### Error 1 — El workflow temporal (creado vía API) escribió basura en la planilla en vez de los headers
 
-**Problema:** al armar un workflow temporal por API de n8n para crear la planilla "Reservas Restaurante Colo" (nodo "Crear planilla" → nodo "Agregar headers" → Respond to Webhook), el resultado no fue la pestaña "Reservas" con los headers `fecha, hora, personas, nombre, numero` — quedaron escritas las columnas `spreadsheetId`, `sheets`, `properties`.
+**Problema:** al armar un workflow temporal por API de n8n para crear la planilla "Reservas del restaurante" (nodo "Crear planilla" → nodo "Agregar headers" → Respond to Webhook), el resultado no fue la pestaña "Reservas" con los headers `fecha, hora, personas, nombre, numero` — quedaron escritas las columnas `spreadsheetId`, `sheets`, `properties`.
 
 **Causa:** el parámetro `columns.mappingMode: "defineBelow"` que se le pasó al nodo "Agregar headers" (armado a mano, adivinando el schema JSON del nodo Google Sheets sin poder validarlo contra n8n antes de ejecutar) no fue reconocido como válido. El nodo cayó en modo de auto-mapeo, que toma las claves del JSON de entrada como si fueran columnas — y ese JSON de entrada era la respuesta cruda de la API de Google (`spreadsheetId`, `properties`, `sheets`, `spreadsheetUrl`) que devolvió el nodo "Crear planilla" inmediatamente antes.
 

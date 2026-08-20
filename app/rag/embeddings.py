@@ -10,9 +10,9 @@ vo = voyageai.Client()  # lee VOYAGE_API_KEY del entorno
 
 RUTA_EMBEDDINGS = Path(__file__).resolve().parent.parent.parent / "data" / "faq_embeddings.json"
 
-# Plan B: FAQ de ejemplo, mientras el FAQ real de Colo todavía no está listo.
-# Reemplazar esta lista por el FAQ real apenas Colo lo mande - el resto del
-# código de este archivo no cambia.
+# Plan B: FAQ de ejemplo, mientras el FAQ real del restaurante todavía no
+# está listo. Reemplazar esta lista por el FAQ real apenas lo manden - el resto
+# del código de este archivo no cambia.
 faq: list[str] = [
     "Tienen opciones sin TACC? Sí, 3 platos aptos para celíacos.",
     "Hasta qué hora atienden los sábados? Hasta las 00:30.",
