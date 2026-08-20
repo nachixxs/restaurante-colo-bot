@@ -30,7 +30,7 @@
             {
               "id": "verify-token-check",
               "leftValue": "={{ $json.query['hub.verify_token'] }}",
-              "rightValue": "colo-webhook-2026",
+              "rightValue": "<VERIFY_TOKEN>",
               "operator": {
                 "type": "string",
                 "operation": "equals"

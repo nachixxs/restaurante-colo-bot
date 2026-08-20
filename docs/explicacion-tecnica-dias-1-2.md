@@ -141,7 +141,7 @@ graph TD
 Escucha en `https://[tu-dominio-ngrok]/webhook/restaurante-colo-dia2`, solo peticiones GET. Cuando registrás el webhook en el panel de Meta, Meta manda una petición de prueba con tres parámetros: `hub.mode`, `hub.verify_token`, y `hub.challenge`. Este nodo la recibe y se la pasa al siguiente.
 
 **Verificar token (nodo IF)**
-Compara el `hub.verify_token` que mandó Meta contra un valor fijo que vos definiste (`colo-webhook-2026`). Es una contraseña simple, inventada por vos, que confirma que quien está registrando el webhook sos realmente vos (o alguien con acceso al panel de Meta), no un tercero cualquiera.
+Compara el `hub.verify_token` que mandó Meta contra un valor fijo que vos definiste (el *verify token*, que no se versiona). Es una contraseña simple, inventada por vos, que confirma que quien está registrando el webhook sos realmente vos (o alguien con acceso al panel de Meta), no un tercero cualquiera.
 
 **Responder challenge**
 Si el token coincide, este nodo devuelve el valor de `hub.challenge` tal cual — eso es lo que Meta espera recibir de vuelta para dar la verificación por buena. Sin esto, Meta nunca activa el webhook.
@@ -238,7 +238,7 @@ No hace falta recrear nada — es un paso puntual, una sola vez, sobre la app qu
 |---|---|---|---|
 | `WHATSAPP_TOKEN` | Panel de Meta, "Identificador de acceso" (dura ~24hs o menos) | Autoriza llamadas a la API de WhatsApp (mandar mensajes) | Header `Authorization: Bearer ...` del nodo "Responder por WhatsApp" en n8n, y en `.env` |
 | `WHATSAPP_PHONE_ID` | Panel de Meta, se ve fijo en el número de prueba | Identifica DESDE qué número se manda un mensaje | URL del nodo "Responder por WhatsApp" (`.../{PHONE_ID}/messages`) |
-| Verify Token (`colo-webhook-2026`) | Inventado por vos | Confirma que quien registra el webhook sos vos, no un tercero | Nodo "Verificar token" en n8n, y campo "Identificador de verificación" en Meta |
+| Verify Token | Inventado por vos | Confirma que quien registra el webhook sos vos, no un tercero | Nodo "Verificar token" en n8n, y campo "Identificador de verificación" en Meta |
 | `N8N_API_KEY` | Panel de n8n, Settings → API | Permite que scripts externos (o Claude Code) creen/actualicen workflows sin usar la interfaz web | Usado en los scripts de PowerShell que corrimos para actualizar el workflow |
 | WABA ID (`2468202600345069`) | Fijo, se ve en el panel de Meta | Identifica la cuenta de WhatsApp Business | Usado para el link Capa 2 ↔ Capa 3 (`subscribed_apps`) |
 
